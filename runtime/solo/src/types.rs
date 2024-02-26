@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+use sp_runtime::traits::{IdentifyAccount, Verify};
+
 /// An index to a block.
 pub type BlockNumber = u32;
 
@@ -47,7 +49,7 @@ pub type AssetId = u32;
 pub type CollectionId = u32;
 
 /// Id used for identifying non-fungible items.
-pub type ItemId = u32;
+pub type ItemId = Hash;
 
 pub mod proxy {
 	use frame_support::{

@@ -1,7 +1,8 @@
-use crate::{
-	BlockWeights, OriginCaller, Runtime, RuntimeCall, RuntimeEvent, RuntimeOrigin, AJUNS, DAYS,
-};
 use crate::types::{AccountId, Balance, BlockNumber};
+use crate::{
+	OriginCaller, Runtime, RuntimeBlockWeights, RuntimeCall, RuntimeEvent, RuntimeOrigin, AJUNS,
+	DAYS,
+};
 use frame_support::{
 	dispatch::RawOrigin,
 	parameter_types,
@@ -71,7 +72,7 @@ type CouncilCollective = pallet_collective::Instance1;
 
 parameter_types! {
 	pub CouncilMotionDuration: BlockNumber = 3 * DAYS;
-	pub MaxProposalWeight: Weight = Perbill::from_percent(50) * BlockWeights::get().max_block;
+	pub MaxProposalWeight: Weight = Perbill::from_percent(50) * RuntimeBlockWeights::get().max_block;
 }
 
 impl pallet_collective::Config<CouncilCollective> for Runtime {

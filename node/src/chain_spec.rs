@@ -1,15 +1,15 @@
-use ajuna_solo_runtime::{AccountId, AuraId, Signature, AJUNS};
-use cumulus_primitives_core::ParaId;
-use sc_chain_spec::{ChainSpecExtension, ChainSpecGroup};
+use sc_chain_spec::NoExtension;
 use sc_service::ChainType;
-use serde::{Deserialize, Serialize};
+use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_core::{sr25519, Pair, Public};
 use sp_runtime::traits::{IdentifyAccount, Verify};
 
-/// Specialized `ChainSpec` for the normal parachain runtime.
-pub type ChainSpec = sc_service::GenericChainSpec<(), Extensions>;
+use ajuna_solo_runtime::{currency::AJUNS, *};
 
-const TOKEN_SYMBOL: &'static str = "AJUN";
+/// Specialized `ChainSpec` for the normal parachain runtime.
+pub type ChainSpec = sc_service::GenericChainSpec<RuntimeGenesisConfig>;
+
+const TOKEN_SYMBOL: &str = "AJUN";
 const TOKEN_DECIMALS: u32 = 12;
 const SS58_FORMAT: u32 = 42;
 
@@ -22,13 +22,6 @@ pub fn get_from_seed<TPublic: Public>(seed: &str) -> <TPublic::Pair as Pair>::Pu
 
 type AccountPublic = <Signature as Verify>::Signer;
 
-/// Generate collator keys from seed.
-///
-/// This function's return type must always match the session keys of the chain in tuple format.
-pub fn get_collator_keys_from_seed(seed: &str) -> AuraId {
-	get_from_seed::<AuraId>(seed)
-}
-
 /// Helper function to generate an account ID from seed
 pub fn get_account_id_from_seed<TPublic: Public>(seed: &str) -> AccountId
 where
@@ -37,11 +30,36 @@ where
 	AccountPublic::from(get_from_seed::<TPublic>(seed)).into_account()
 }
 
-/// Generate the session keys from individual elements.
-///
-/// The input must be a tuple of individual keys (a single arg for now since we have just one key).
-pub fn template_session_keys(keys: AuraId) -> ajuna_solo_runtime::SessionKeys {
-	ajuna_solo_runtime::SessionKeys { aura: keys }
+type GrandpaId = sp_consensus_grandpa::AuthorityId;
+type GrandpaWeight = sp_consensus_grandpa::AuthorityWeight;
+type AuthorityPublicKey = (AuraId, (GrandpaId, GrandpaWeight));
+
+// Generate an authority key.
+fn authority_keys_from_seed(s: &str) -> AuthorityPublicKey {
+	(get_from_seed::<AuraId>(s), (get_from_seed::<GrandpaId>(s), 1))
+}
+
+pub struct WellKnownAccounts {
+	// accounts
+	pub alice: AccountId,
+	pub bob: AccountId,
+	pub charlie: AccountId,
+	pub dave: AccountId,
+	pub eve: AccountId,
+	pub ferdie: AccountId,
+
+	// stashes
+	pub alice_stash: AccountId,
+	pub bob_stash: AccountId,
+	pub charlie_stash: AccountId,
+	pub dave_stash: AccountId,
+	pub eve_stash: AccountId,
+	pub ferdie_stash: AccountId,
+
+	// authorities
+	pub alice_authority: AuthorityPublicKey,
+	pub bob_authority: AuthorityPublicKey,
+	pub charlie_authority: AuthorityPublicKey,
 }
 
 pub fn get_well_known_accounts() -> WellKnownAccounts {
@@ -72,7 +90,7 @@ pub fn development_config() -> ChainSpec {
 
 	ChainSpec::builder(
 		ajuna_solo_runtime::WASM_BINARY.expect("WASM binary was not built, please build it!"),
-		NoExtension,
+		NoExtension::None,
 	)
 	.with_name("Ajuna Dev Testnet")
 	.with_id("ajuna-dev-testnet")
@@ -89,13 +107,24 @@ pub fn local_testnet_config() -> ChainSpec {
 
 	ChainSpec::builder(
 		ajuna_solo_runtime::WASM_BINARY.expect("WASM binary was not built, please build it!"),
-		NoExtension,
+		NoExtension::None,
 	)
-		.with_name("Ajuna Testnet")
-		.with_id("ajuna-testnet")
-		.with_chain_type(ChainType::Local)
-		.with_genesis_config_patch(development_config_genesis())
-		.build()
+	.with_name("Ajuna Testnet")
+	.with_id("ajuna-testnet")
+	.with_chain_type(ChainType::Local)
+	.with_genesis_config_patch(testnet_config_genesis())
+	.build()
+}
+
+struct Config {
+	aura: AuraConfig,
+	grandpa: GrandpaConfig,
+	sudo: SudoConfig,
+	council: CouncilConfig,
+	technical_committee: TechnicalCommitteeConfig,
+	balances: BalancesConfig,
+	assets: AssetsConfig,
+	vesting: VestingConfig,
 }
 
 fn development_config_genesis() -> serde_json::Value {
@@ -217,9 +246,6 @@ fn testnet_config_genesis() -> serde_json::Value {
 
 // Composes config with defaults to return initial storage state for FRAME modules.
 fn compose_genesis_config(config: Config) -> serde_json::Value {
-	let wasm_binary = ajuna_solo_runtime::WASM_BINARY.expect(
-		"Development wasm binary is not available. Please rebuild with SKIP_WASM_BUILD disabled.",
-	);
 	let Config { aura, grandpa, sudo, council, technical_committee, balances, assets, vesting } =
 		config;
 
@@ -233,10 +259,10 @@ fn compose_genesis_config(config: Config) -> serde_json::Value {
 		"assets": assets,
 		"vesting": vesting,
 		// default config
-		"system": SystemConfig { code: wasm_binary.to_vec(), ..Default::default() },
-		"transaction_payment": Default::default(),
-		"treasury": treasury: Default::default(),
-		"democracy": democracy: Default::default(),
-		"awesome_avatars": awesome_avatars: Default::default(),
+		"system": SystemConfig::default(),
+		"transaction_payment": TransactionPaymentConfig::default(),
+		"treasury": TreasuryConfig::default(),
+		"democracy": DemocracyConfig::default(),
+		"awesome_avatars": AwesomeAvatarsConfig::default(),
 	})
 }

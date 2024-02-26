@@ -31,6 +31,7 @@ frame-support                              = { workspace = true }
 frame-system                               = { workspace = true }
 frame-system-benchmarking                  = { workspace = true, optional = true }
 frame-system-rpc-runtime-api               = { workspace = true }
+frame-try-runtime                          = { workspace = true }
 pallet-asset-tx-payment                    = { workspace = true }
 pallet-assets                              = { workspace = true }
 pallet-aura                                = { workspace = true }
@@ -40,7 +41,6 @@ pallet-democracy                           = { workspace = true }
 pallet-grandpa                             = { workspace = true }
 pallet-identity                            = { workspace = true }
 pallet-insecure-randomness-collective-flip = { workspace = true }
-pallet-membership                          = { workspace = true }
 pallet-multisig                            = { workspace = true }
 pallet-nfts                                = { workspace = true }
 pallet-preimage                            = { workspace = true }
@@ -55,7 +55,9 @@ pallet-utility                             = { workspace = true }
 sp-api                                     = { workspace = true }
 sp-block-builder                           = { workspace = true }
 sp-consensus-aura                          = { workspace = true }
+sp-consensus-grandpa                       = { workspace = true }
 sp-core                                    = { workspace = true }
+sp-genesis-builder                         = { workspace = true }
 sp-inherents                               = { workspace = true }
 sp-offchain                                = { workspace = true }
 sp-runtime                                 = { workspace = true }
@@ -87,6 +89,7 @@ std = [
     "orml-vesting/std",
     "pallet-ajuna-awesome-avatars/std",
     "pallet-ajuna-nft-transfer/std",
+    "pallet-ajuna-nft-staking/std",
     "pallet-aura/std",
     "pallet-assets/std",
     "pallet-balances/std",
@@ -94,7 +97,6 @@ std = [
     "pallet-democracy/std",
     "pallet-grandpa/std",
     "pallet-identity/std",
-    "pallet-membership/std",
     "pallet-multisig/std",
     "pallet-nfts/std",
     "pallet-preimage/std",
@@ -131,7 +133,6 @@ runtime-benchmarks = [
     "pallet-balances/runtime-benchmarks",
     "pallet-collective/runtime-benchmarks",
     "pallet-identity/runtime-benchmarks",
-    "pallet-membership/runtime-benchmarks",
     "pallet-multisig/runtime-benchmarks",
     "pallet-nfts/runtime-benchmarks",
     "pallet-preimage/runtime-benchmarks",
@@ -142,17 +143,22 @@ runtime-benchmarks = [
     "pallet-utility/runtime-benchmarks",
     "sp-runtime/runtime-benchmarks",
     "pallet-ajuna-nft-transfer/runtime-benchmarks",
+    "pallet-ajuna-nft-staking/runtime-benchmarks",
 ]
 
 try-runtime = [
     "frame-executive/try-runtime",
+    "frame-support/try-runtime",
     "frame-system/try-runtime",
     "orml-vesting/try-runtime",
+    "pallet-assets/try-runtime",
+    "pallet-asset-tx-payment/try-runtime",
     "pallet-aura/try-runtime",
     "pallet-balances/try-runtime",
     "pallet-collective/try-runtime",
+    "pallet-democracy/try-runtime",
+    "pallet-grandpa/try-runtime",
     "pallet-identity/try-runtime",
-    "pallet-membership/try-runtime",
     "pallet-multisig/try-runtime",
     "pallet-nfts/try-runtime",
     "pallet-preimage/try-runtime",
@@ -165,7 +171,9 @@ try-runtime = [
     "pallet-treasury/try-runtime",
     "pallet-utility/try-runtime",
     "pallet-ajuna-awesome-avatars/try-runtime",
+    "pallet-ajuna-battle-mogs/try-runtime",
     "pallet-ajuna-nft-transfer/try-runtime",
+    "pallet-ajuna-nft-staking/try-runtime",
 ]
 
 experimental = [ "pallet-aura/experimental" ]
