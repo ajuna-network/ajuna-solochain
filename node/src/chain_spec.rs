@@ -263,6 +263,6 @@ fn compose_genesis_config(config: Config) -> serde_json::Value {
 		"transaction_payment": TransactionPaymentConfig::default(),
 		"treasury": TreasuryConfig::default(),
 		"democracy": DemocracyConfig::default(),
-		"awesome_avatars": AwesomeAvatarsConfig::default(),
+		"awesomeAvatars": AwesomeAvatarsConfig::default(),
 	})
 }
