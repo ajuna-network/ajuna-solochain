@@ -125,10 +125,11 @@ orml-vesting = { git = "https://github.com/ajuna-network/open-runtime-module-lib
 ajuna-solo-runtime = { path = "runtime/solo" }
 
 # Ajuna Pallets
-pallet-ajuna-awesome-avatars              = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.1.0", default-features = false }
-pallet-ajuna-battle-mogs                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.1.0", default-features = false }
-pallet-ajuna-nft-transfer                 = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.1.0", default-features = false }
-pallet-ajuna-nft-staking                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.1.0", default-features = false }
+pallet-ajuna-awesome-avatars              = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "develop", default-features = false }
+pallet-ajuna-affiliates                   = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "develop", default-features = false }
+pallet-ajuna-battle-mogs                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "develop", default-features = false }
+pallet-ajuna-nft-transfer                 = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "develop", default-features = false }
+pallet-ajuna-nft-staking                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "develop", default-features = false }
 
 [profile.production]
 codegen-units = 1

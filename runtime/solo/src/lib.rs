@@ -515,7 +515,21 @@ impl pallet_ajuna_awesome_avatars::Config for Runtime {
 	type KeyLimit = KeyLimit;
 	type ValueLimit = ValueLimit;
 	type NftHandler = NftTransfer;
+	type AffiliateHandler = Affiliates;
+	type FeeChainMaxLength = AffiliateMaxLevel;
 	type WeightInfo = ();
+}
+
+parameter_types! {
+	pub const AffiliateMaxLevel: u32 = 2;
+}
+
+pub type AffiliatesInstance1 = pallet_ajuna_affiliates::Instance1;
+impl pallet_ajuna_affiliates::Config<AffiliatesInstance1> for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type RuleIdentifier = pallet_ajuna_awesome_avatars::types::AffiliateMethods;
+	type RuntimeRule = pallet_ajuna_awesome_avatars::FeePropagationOf<Runtime>;
+	type AffiliateMaxLevel = AffiliateMaxLevel;
 }
 
 pub const fn deposit(items: u32, bytes: u32) -> Balance {
@@ -699,6 +713,7 @@ construct_runtime!(
 		NftTransfer: pallet_ajuna_nft_transfer = 25,
 		NftStaking: pallet_ajuna_nft_staking = 26,
 		BattleMogs: pallet_ajuna_battle_mogs = 27,
+		Affiliates: pallet_ajuna_affiliates::<Instance1> = 28,
 	}
 );
 
