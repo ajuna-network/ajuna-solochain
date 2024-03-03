@@ -2213,12 +2213,13 @@ dependencies = [
 
 [[package]]
 name = "expander"
-version = "2.0.0"
+version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5f86a749cf851891866c10515ef6c299b5c69661465e9c3bbe7e07a2b77fb0f7"
+checksum = "00e83c02035136f1592a47964ea60c05a50e4ed8b5892cfac197063850898d4d"
 dependencies = [
  "blake2 0.10.6",
  "fs-err",
+ "prettier-please",
  "proc-macro2",
  "quote",
  "syn 2.0.52",
@@ -3656,12 +3657,12 @@ checksum = "9c198f91728a82281a64e1f4f9eeb25d82cb32a5de251c6bd1b5154d63a8e7bd"
 
 [[package]]
 name = "libloading"
-version = "0.8.1"
+version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c571b676ddfc9a8c12f1f3d3085a7b163966a8fd8098a90640953ce5f6170161"
+checksum = "2caa5afb8bf9f3a2652760ce7d4f62d21c4d5a423e68466fca30df82f2330164"
 dependencies = [
  "cfg-if",
- "windows-sys 0.48.0",
+ "windows-targets 0.52.4",
 ]
 
 [[package]]
@@ -4445,9 +4446,9 @@ dependencies = [
 
 [[package]]
 name = "mio"
-version = "0.8.10"
+version = "0.8.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8f3d0b296e374a4e6f3c7b0a1f5a51d748a0d34c85e7dc48fc3fa9a87657fe09"
+checksum = "a4a650543ca06a924e8b371db273b2756685faae30f8487da1b56505a8f78b0c"
 dependencies = [
  "libc",
  "wasi 0.11.0+wasi-snapshot-preview1",
@@ -4882,7 +4883,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-affiliates"
 version = "0.1.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#c2949128a9ffd9a0e470fa6d9e40bd910671223b"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#43a8dabe6e8df2c9a9fcaf9f587249b7f475d7cd"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4895,7 +4896,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-awesome-avatars"
 version = "0.1.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#c2949128a9ffd9a0e470fa6d9e40bd910671223b"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#43a8dabe6e8df2c9a9fcaf9f587249b7f475d7cd"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4913,7 +4914,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-battle-mogs"
 version = "0.1.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#c2949128a9ffd9a0e470fa6d9e40bd910671223b"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#43a8dabe6e8df2c9a9fcaf9f587249b7f475d7cd"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4927,7 +4928,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-nft-staking"
 version = "0.1.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#c2949128a9ffd9a0e470fa6d9e40bd910671223b"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#43a8dabe6e8df2c9a9fcaf9f587249b7f475d7cd"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4942,7 +4943,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-nft-transfer"
 version = "0.1.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#c2949128a9ffd9a0e470fa6d9e40bd910671223b"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#43a8dabe6e8df2c9a9fcaf9f587249b7f475d7cd"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -5499,9 +5500,9 @@ checksum = "e3148f5046208a5d56bcfc03053e3ca6334e51da8dfb19b6cdc8b306fae3283e"
 
 [[package]]
 name = "pest"
-version = "2.7.7"
+version = "2.7.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "219c0dcc30b6a27553f9cc242972b67f75b60eb0db71f0b5462f38b058c41546"
+checksum = "56f8023d0fb78c8e03784ea1c7f3fa36e68a723138990b8d5a47d916b651e7a8"
 dependencies = [
  "memchr",
  "thiserror",
@@ -5510,9 +5511,9 @@ dependencies = [
 
 [[package]]
 name = "pest_derive"
-version = "2.7.7"
+version = "2.7.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22e1288dbd7786462961e69bfd4df7848c1e37e8b74303dbdab82c3a9cdd2809"
+checksum = "b0d24f72393fd16ab6ac5738bc33cdb6a9aa73f8b902e8fe29cf4e67d7dd1026"
 dependencies = [
  "pest",
  "pest_generator",
@@ -5520,9 +5521,9 @@ dependencies = [
 
 [[package]]
 name = "pest_generator"
-version = "2.7.7"
+version = "2.7.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1381c29a877c6d34b8c176e734f35d7f7f5b3adaefe940cb4d1bb7af94678e2e"
+checksum = "fdc17e2a6c7d0a492f0158d7a4bd66cc17280308bbaff78d5bef566dca35ab80"
 dependencies = [
  "pest",
  "pest_meta",
@@ -5533,9 +5534,9 @@ dependencies = [
 
 [[package]]
 name = "pest_meta"
-version = "2.7.7"
+version = "2.7.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d0934d6907f148c22a3acbda520c7eed243ad7487a30f51f6ce52b58b7077a8a"
+checksum = "934cd7631c050f4674352a6e835d5f6711ffbfb9345c2fc0107155ac495ae293"
 dependencies = [
  "once_cell",
  "pest",
@@ -5735,10 +5736,20 @@ dependencies = [
 ]
 
 [[package]]
-name = "prettyplease"
-version = "0.1.25"
+name = "prettier-please"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6c8646e95016a7a6c4adea95bafa8a16baab64b583356217f2c85db4a39d9a86"
+checksum = "22020dfcf177fcc7bf5deaf7440af371400c67c0de14c399938d8ed4fb4645d3"
+dependencies = [
+ "proc-macro2",
+ "syn 2.0.52",
+]
+
+[[package]]
+name = "prettyplease"
+version = "0.1.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f28f53e8b192565862cf99343194579a022eb9c7dd3a8d03134734803c7b3125"
 dependencies = [
  "proc-macro2",
  "syn 1.0.109",
@@ -5909,7 +5920,7 @@ dependencies = [
  "log",
  "multimap",
  "petgraph",
- "prettyplease 0.1.25",
+ "prettyplease 0.1.11",
  "prost 0.11.9",
  "prost-types",
  "regex",
@@ -8155,7 +8166,7 @@ dependencies = [
 [[package]]
 name = "sp-crypto-ec-utils"
 version = "0.10.0"
-source = "git+https://github.com/paritytech/polkadot-sdk#6f81a4a09270a5930b8786e2dc765347078b4d4a"
+source = "git+https://github.com/paritytech/polkadot-sdk#b0741d4f78ebc424c7544e1d2d5db7968132e577"
 dependencies = [
  "ark-bls12-377",
  "ark-bls12-377-ext",
@@ -8218,7 +8229,7 @@ dependencies = [
 [[package]]
 name = "sp-debug-derive"
 version = "14.0.0"
-source = "git+https://github.com/paritytech/polkadot-sdk#6f81a4a09270a5930b8786e2dc765347078b4d4a"
+source = "git+https://github.com/paritytech/polkadot-sdk#b0741d4f78ebc424c7544e1d2d5db7968132e577"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -8239,7 +8250,7 @@ dependencies = [
 [[package]]
 name = "sp-externalities"
 version = "0.25.0"
-source = "git+https://github.com/paritytech/polkadot-sdk#6f81a4a09270a5930b8786e2dc765347078b4d4a"
+source = "git+https://github.com/paritytech/polkadot-sdk#b0741d4f78ebc424c7544e1d2d5db7968132e577"
 dependencies = [
  "environmental",
  "parity-scale-codec",
@@ -8426,7 +8437,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface"
 version = "24.0.0"
-source = "git+https://github.com/paritytech/polkadot-sdk#6f81a4a09270a5930b8786e2dc765347078b4d4a"
+source = "git+https://github.com/paritytech/polkadot-sdk#b0741d4f78ebc424c7544e1d2d5db7968132e577"
 dependencies = [
  "bytes",
  "impl-trait-for-tuples",
@@ -8458,7 +8469,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface-proc-macro"
 version = "17.0.0"
-source = "git+https://github.com/paritytech/polkadot-sdk#6f81a4a09270a5930b8786e2dc765347078b4d4a"
+source = "git+https://github.com/paritytech/polkadot-sdk#b0741d4f78ebc424c7544e1d2d5db7968132e577"
 dependencies = [
  "Inflector",
  "expander",
@@ -8551,7 +8562,7 @@ source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=release-polk
 [[package]]
 name = "sp-std"
 version = "14.0.0"
-source = "git+https://github.com/paritytech/polkadot-sdk#6f81a4a09270a5930b8786e2dc765347078b4d4a"
+source = "git+https://github.com/paritytech/polkadot-sdk#b0741d4f78ebc424c7544e1d2d5db7968132e577"
 
 [[package]]
 name = "sp-storage"
@@ -8569,7 +8580,7 @@ dependencies = [
 [[package]]
 name = "sp-storage"
 version = "19.0.0"
-source = "git+https://github.com/paritytech/polkadot-sdk#6f81a4a09270a5930b8786e2dc765347078b4d4a"
+source = "git+https://github.com/paritytech/polkadot-sdk#b0741d4f78ebc424c7544e1d2d5db7968132e577"
 dependencies = [
  "impl-serde",
  "parity-scale-codec",
@@ -8607,7 +8618,7 @@ dependencies = [
 [[package]]
 name = "sp-tracing"
 version = "16.0.0"
-source = "git+https://github.com/paritytech/polkadot-sdk#6f81a4a09270a5930b8786e2dc765347078b4d4a"
+source = "git+https://github.com/paritytech/polkadot-sdk#b0741d4f78ebc424c7544e1d2d5db7968132e577"
 dependencies = [
  "parity-scale-codec",
  "sp-std 14.0.0 (git+https://github.com/paritytech/polkadot-sdk)",
@@ -8708,7 +8719,7 @@ dependencies = [
 [[package]]
 name = "sp-wasm-interface"
 version = "20.0.0"
-source = "git+https://github.com/paritytech/polkadot-sdk#6f81a4a09270a5930b8786e2dc765347078b4d4a"
+source = "git+https://github.com/paritytech/polkadot-sdk#b0741d4f78ebc424c7544e1d2d5db7968132e577"
 dependencies = [
  "anyhow",
  "impl-trait-for-tuples",
@@ -9735,9 +9746,9 @@ dependencies = [
 
 [[package]]
 name = "walkdir"
-version = "2.4.0"
+version = "2.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d71d857dc86794ca4c280d616f7da00d2dbfd8cd788846559a6813e6aa4b54ee"
+checksum = "29790946404f91d9c5d06f9874efddea1dc06c5efe94541a7d6863108e3a5e4b"
 dependencies = [
  "same-file",
  "winapi-util",
