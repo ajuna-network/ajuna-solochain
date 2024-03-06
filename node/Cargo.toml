@@ -9,35 +9,35 @@ version.workspace    = true
 
 [dependencies]
 # General
-clap        = { workspace = true }
+clap        = { workspace = true, features = ["std"] }
 hex-literal = { workspace = true }
-log         = { workspace = true }
-serde       = { workspace = true, features = [ "derive" ] }
-jsonrpsee   = { workspace = true, features = [ "server" ] }
-futures     = { workspace = true }
-serde_json  = { workspace = true }
+log         = { workspace = true, features = ["std"] }
+serde       = { workspace = true, features = ["std", "derive"] }
+jsonrpsee   = { workspace = true, features = ["server"] }
+futures     = { workspace = true, features = ["std"] }
+serde_json  = { workspace = true, features = ["std"] }
 
 # Parity codec
-parity-scale-codec = { workspace = true }
+parity-scale-codec = { workspace = true, features = ["std"] }
 
 # Substrate
-frame-benchmarking             = { workspace = true }
+frame-benchmarking             = { workspace = true, features = ["std"] }
 frame-benchmarking-cli         = { workspace = true }
-frame-system                   = { workspace = true }
-pallet-asset-tx-payment        = { workspace = true }
-pallet-transaction-payment     = { workspace = true }
+frame-system                   = { workspace = true, features = ["std"] }
+pallet-asset-tx-payment        = { workspace = true, features = ["std"] }
+pallet-transaction-payment     = { workspace = true, features = ["std"] }
 pallet-transaction-payment-rpc = { workspace = true }
 sc-basic-authorship            = { workspace = true }
 sc-chain-spec                  = { workspace = true }
 sc-cli                         = { workspace = true }
 sc-client-api                  = { workspace = true }
-sc-offchain                    = { workspace = true }
 sc-consensus                   = { workspace = true }
 sc-consensus-aura              = { workspace = true }
 sc-consensus-grandpa           = { workspace = true }
-sc-executor                    = { workspace = true }
+sc-executor                    = { workspace = true, features = ["std"] }
 sc-network                     = { workspace = true }
 sc-network-sync                = { workspace = true }
+sc-offchain                    = { workspace = true }
 sc-rpc                         = { workspace = true }
 sc-rpc-api                     = { workspace = true }
 sc-service                     = { workspace = true }
@@ -46,24 +46,24 @@ sc-telemetry                   = { workspace = true }
 sc-tracing                     = { workspace = true }
 sc-transaction-pool            = { workspace = true }
 sc-transaction-pool-api        = { workspace = true }
-sp-api                         = { workspace = true }
-sp-block-builder               = { workspace = true }
+sp-api                         = { workspace = true, features = ["std"] }
+sp-block-builder               = { workspace = true, features = ["std"] }
 sp-blockchain                  = { workspace = true }
-sp-consensus-aura              = { workspace = true }
-sp-consensus-grandpa           = { workspace = true }
-sp-core                        = { workspace = true }
-sp-io                          = { workspace = true }
-sp-inherents                   = { workspace = true }
+sp-consensus-aura              = { workspace = true, features = ["std"] }
+sp-consensus-grandpa           = { workspace = true, features = ["std"] }
+sp-core                        = { workspace = true, features = ["std"] }
+sp-io                          = { workspace = true, features = ["std"] }
+sp-inherents                   = { workspace = true, features = ["std"] }
 sp-keyring                     = { workspace = true }
-sp-keystore                    = { workspace = true }
-sp-runtime                     = { workspace = true }
-sp-timestamp                   = { workspace = true }
+sp-keystore                    = { workspace = true, features = ["std"] }
+sp-runtime                     = { workspace = true, features = ["std"] }
+sp-timestamp                   = { workspace = true, features = ["std"] }
 substrate-frame-rpc-system     = { workspace = true }
 substrate-prometheus-endpoint  = { workspace = true }
 try-runtime-cli                = { workspace = true }
 
 # Runtime
-ajuna-solo-runtime = { workspace = true }
+ajuna-solo-runtime = { workspace = true, features = ["std"] }
 
 [build-dependencies]
 substrate-build-script-utils = { workspace = true }
