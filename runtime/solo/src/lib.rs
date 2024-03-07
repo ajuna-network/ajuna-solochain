@@ -23,14 +23,16 @@
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
 use crate::gov::EnsureRootOrMoreThanHalfCouncil;
-use frame_support::genesis_builder_helper::{build_config, create_default_config};
-use frame_support::pallet_prelude::ConstU32;
-use frame_support::traits::fungible::HoldConsideration;
-use frame_support::traits::tokens::{PayFromAccount, UnityAssetBalanceConversion};
-use frame_support::traits::Footprint;
 use frame_support::{
-	construct_runtime, parameter_types,
-	traits::{AsEnsureOriginWithArg, ConstBool, Contains},
+	construct_runtime,
+	genesis_builder_helper::{build_config, create_default_config},
+	pallet_prelude::ConstU32,
+	parameter_types,
+	traits::{
+		fungible::HoldConsideration,
+		tokens::{PayFromAccount, UnityAssetBalanceConversion},
+		AsEnsureOriginWithArg, ConstBool, Contains, Footprint,
+	},
 	weights::{
 		constants::{RocksDbWeight, WEIGHT_REF_TIME_PER_SECOND},
 		IdentityFee, Weight,

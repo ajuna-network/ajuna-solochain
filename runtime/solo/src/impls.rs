@@ -14,8 +14,10 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-use crate::types::{AccountId, Balance};
-use crate::{Assets, Balances, Treasury};
+use crate::{
+	types::{AccountId, Balance},
+	Assets, Balances, Treasury,
+};
 use frame_support::traits::{
 	fungibles::{Credit, Inspect},
 	Currency, OnUnbalanced,
