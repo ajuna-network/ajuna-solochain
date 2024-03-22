@@ -513,8 +513,9 @@ impl pallet_ajuna_awesome_avatars::Config for Runtime {
 	type KeyLimit = KeyLimit;
 	type ValueLimit = ValueLimit;
 	type NftHandler = NftTransfer;
-	type AffiliateHandler = Affiliates;
 	type FeeChainMaxLength = AffiliateMaxLevel;
+	type AffiliateHandler = Affiliates;
+	type TournamentHandler = Tournament;
 	type WeightInfo = ();
 }
 
@@ -528,6 +529,22 @@ impl pallet_ajuna_affiliates::Config<AffiliatesInstance1> for Runtime {
 	type RuleIdentifier = pallet_ajuna_awesome_avatars::types::AffiliateMethods;
 	type RuntimeRule = pallet_ajuna_awesome_avatars::FeePropagationOf<Runtime>;
 	type AffiliateMaxLevel = AffiliateMaxLevel;
+}
+
+parameter_types! {
+	pub const TournamentPalletId1: PalletId = PalletId(*b"aj/trmt1");
+	pub const MinimumTournamentPhaseDuration: BlockNumber = 100;
+}
+
+type TournamentInstance1 = pallet_ajuna_tournament::Instance1;
+impl pallet_ajuna_tournament::Config<TournamentInstance1> for Runtime {
+	type PalletId = TournamentPalletId1;
+	type RuntimeEvent = RuntimeEvent;
+	type Currency = Balances;
+	type SeasonId = pallet_ajuna_awesome_avatars::types::SeasonId;
+	type EntityId = pallet_ajuna_awesome_avatars::AvatarIdOf<Runtime>;
+	type RankedEntity = pallet_ajuna_awesome_avatars::types::Avatar;
+	type MinimumTournamentPhaseDuration = MinimumTournamentPhaseDuration;
 }
 
 pub const fn deposit(items: u32, bytes: u32) -> Balance {
@@ -712,6 +729,7 @@ construct_runtime!(
 		NftStaking: pallet_ajuna_nft_staking = 26,
 		BattleMogs: pallet_ajuna_battle_mogs = 27,
 		Affiliates: pallet_ajuna_affiliates::<Instance1> = 28,
+		Tournament: pallet_ajuna_tournament::<Instance1> = 29,
 	}
 );
 
