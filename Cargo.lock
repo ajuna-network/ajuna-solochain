@@ -758,9 +758,9 @@ checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
 [[package]]
 name = "backtrace"
-version = "0.3.70"
+version = "0.3.71"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95d8e92cac0961e91dbd517496b00f7e9b92363dbe6d42c3198268323798860c"
+checksum = "26b05800d2e817c8b3b4b54abd461726265fa9789ae34330622f2db9ee696f9d"
 dependencies = [
  "addr2line 0.21.0",
  "cc",
@@ -1048,9 +1048,9 @@ checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 
 [[package]]
 name = "bytes"
-version = "1.5.0"
+version = "1.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a2bd12c1caf447e69cd4528f47f94d203fd2582878ecb9e9465484c4148a8223"
+checksum = "514de17de45fdb8dc022b1a7975556c53c86f9f0aa5f534b98977b171857c2c9"
 
 [[package]]
 name = "bzip2-sys"
@@ -4842,7 +4842,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-affiliates"
 version = "0.3.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#bef02e3b08962d7de9f3c6ac48db998c664a6791"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#da3e29319c36eacfc54fb6d1db9b2d4b2c687a85"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4855,7 +4855,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-awesome-avatars"
 version = "0.3.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#bef02e3b08962d7de9f3c6ac48db998c664a6791"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#da3e29319c36eacfc54fb6d1db9b2d4b2c687a85"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4874,7 +4874,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-battle-mogs"
 version = "0.3.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#bef02e3b08962d7de9f3c6ac48db998c664a6791"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#da3e29319c36eacfc54fb6d1db9b2d4b2c687a85"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4888,7 +4888,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-nft-staking"
 version = "0.3.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#bef02e3b08962d7de9f3c6ac48db998c664a6791"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#da3e29319c36eacfc54fb6d1db9b2d4b2c687a85"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4903,7 +4903,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-nft-transfer"
 version = "0.3.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#bef02e3b08962d7de9f3c6ac48db998c664a6791"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#da3e29319c36eacfc54fb6d1db9b2d4b2c687a85"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4916,7 +4916,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-tournament"
 version = "0.3.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#bef02e3b08962d7de9f3c6ac48db998c664a6791"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#da3e29319c36eacfc54fb6d1db9b2d4b2c687a85"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -8113,7 +8113,7 @@ dependencies = [
 [[package]]
 name = "sp-crypto-ec-utils"
 version = "0.10.0"
-source = "git+https://github.com/paritytech/polkadot-sdk#9d2963c29d9b7ea949851a166e0cb2792fc66fff"
+source = "git+https://github.com/paritytech/polkadot-sdk#9a04ebbfb0b77f2dcdc46db6a1a2b455881edd03"
 dependencies = [
  "ark-bls12-377",
  "ark-bls12-377-ext",
@@ -8175,7 +8175,7 @@ dependencies = [
 [[package]]
 name = "sp-debug-derive"
 version = "14.0.0"
-source = "git+https://github.com/paritytech/polkadot-sdk#9d2963c29d9b7ea949851a166e0cb2792fc66fff"
+source = "git+https://github.com/paritytech/polkadot-sdk#9a04ebbfb0b77f2dcdc46db6a1a2b455881edd03"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -8196,7 +8196,7 @@ dependencies = [
 [[package]]
 name = "sp-externalities"
 version = "0.25.0"
-source = "git+https://github.com/paritytech/polkadot-sdk#9d2963c29d9b7ea949851a166e0cb2792fc66fff"
+source = "git+https://github.com/paritytech/polkadot-sdk#9a04ebbfb0b77f2dcdc46db6a1a2b455881edd03"
 dependencies = [
  "environmental",
  "parity-scale-codec",
@@ -8382,7 +8382,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface"
 version = "24.0.0"
-source = "git+https://github.com/paritytech/polkadot-sdk#9d2963c29d9b7ea949851a166e0cb2792fc66fff"
+source = "git+https://github.com/paritytech/polkadot-sdk#9a04ebbfb0b77f2dcdc46db6a1a2b455881edd03"
 dependencies = [
  "bytes",
  "impl-trait-for-tuples",
@@ -8414,7 +8414,7 @@ dependencies = [
 [[package]]
 name = "sp-runtime-interface-proc-macro"
 version = "17.0.0"
-source = "git+https://github.com/paritytech/polkadot-sdk#9d2963c29d9b7ea949851a166e0cb2792fc66fff"
+source = "git+https://github.com/paritytech/polkadot-sdk#9a04ebbfb0b77f2dcdc46db6a1a2b455881edd03"
 dependencies = [
  "Inflector",
  "expander",
@@ -8507,7 +8507,7 @@ source = "git+https://github.com/paritytech/polkadot-sdk.git?branch=release-polk
 [[package]]
 name = "sp-std"
 version = "14.0.0"
-source = "git+https://github.com/paritytech/polkadot-sdk#9d2963c29d9b7ea949851a166e0cb2792fc66fff"
+source = "git+https://github.com/paritytech/polkadot-sdk#9a04ebbfb0b77f2dcdc46db6a1a2b455881edd03"
 
 [[package]]
 name = "sp-storage"
@@ -8525,7 +8525,7 @@ dependencies = [
 [[package]]
 name = "sp-storage"
 version = "19.0.0"
-source = "git+https://github.com/paritytech/polkadot-sdk#9d2963c29d9b7ea949851a166e0cb2792fc66fff"
+source = "git+https://github.com/paritytech/polkadot-sdk#9a04ebbfb0b77f2dcdc46db6a1a2b455881edd03"
 dependencies = [
  "impl-serde",
  "parity-scale-codec",
@@ -8562,7 +8562,7 @@ dependencies = [
 [[package]]
 name = "sp-tracing"
 version = "16.0.0"
-source = "git+https://github.com/paritytech/polkadot-sdk#9d2963c29d9b7ea949851a166e0cb2792fc66fff"
+source = "git+https://github.com/paritytech/polkadot-sdk#9a04ebbfb0b77f2dcdc46db6a1a2b455881edd03"
 dependencies = [
  "parity-scale-codec",
  "tracing",
@@ -8662,7 +8662,7 @@ dependencies = [
 [[package]]
 name = "sp-wasm-interface"
 version = "20.0.0"
-source = "git+https://github.com/paritytech/polkadot-sdk#9d2963c29d9b7ea949851a166e0cb2792fc66fff"
+source = "git+https://github.com/paritytech/polkadot-sdk#9a04ebbfb0b77f2dcdc46db6a1a2b455881edd03"
 dependencies = [
  "anyhow",
  "impl-trait-for-tuples",
