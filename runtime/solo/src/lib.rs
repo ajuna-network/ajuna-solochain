@@ -76,6 +76,7 @@ use consts::{currency::*, time::*};
 use impls::{CreditToTreasury, OneToOneConversion};
 use pallet_nfts::Call as NftsCall;
 
+use frame_system::pallet_prelude::BlockNumberFor;
 pub use frame_system::Call as SystemCall;
 pub use pallet_balances::Call as BalancesCall;
 use pallet_identity::legacy::IdentityInfo;
@@ -543,7 +544,7 @@ impl pallet_ajuna_tournament::Config<TournamentInstance1> for Runtime {
 	type Currency = Balances;
 	type SeasonId = pallet_ajuna_awesome_avatars::types::SeasonId;
 	type EntityId = pallet_ajuna_awesome_avatars::AvatarIdOf<Runtime>;
-	type RankedEntity = pallet_ajuna_awesome_avatars::types::Avatar;
+	type RankedEntity = pallet_ajuna_awesome_avatars::types::Avatar<BlockNumberFor<Runtime>>;
 	type MinimumTournamentPhaseDuration = MinimumTournamentPhaseDuration;
 }
 
