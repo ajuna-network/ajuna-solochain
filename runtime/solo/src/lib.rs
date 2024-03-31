@@ -680,25 +680,36 @@ construct_runtime!(
 		AssetTxPayment: pallet_asset_tx_payment = 6,
 		Assets: pallet_assets = 7,
 		Vesting: orml_vesting = 8,
-		// pub type CouncilCollective = pallet_collective::Instance1;
-		Council: pallet_collective::<Instance1> = 9,
-		// pub type TechnicalCommitteeInstance = pallet_collective::Instance2;
-		TechnicalCommittee: pallet_collective::<Instance2> = 10,
-		Treasury: pallet_treasury = 11,
-		Democracy: pallet_democracy = 12,
-		Sudo: pallet_sudo = 13,
 		Scheduler: pallet_scheduler = 14,
 		Identity: pallet_identity = 15,
 		Proxy: pallet_proxy = 16,
 		Multisig: pallet_multisig = 17,
 		Utility: pallet_utility = 18,
 		Preimage: pallet_preimage = 19,
-		AwesomeAvatars: pallet_ajuna_awesome_avatars = 22,
-		Randomness: pallet_insecure_randomness_collective_flip = 23,
-		Nft: pallet_nfts = 24,
-		NftTransfer: pallet_ajuna_nft_transfer = 25,
-		NftStaking: pallet_ajuna_nft_staking = 26,
-		BattleMogs: pallet_ajuna_battle_mogs = 27,
+
+		// Governance
+		Sudo: pallet_sudo = 40,
+		Treasury: pallet_treasury = 41,
+		// type CouncilCollectiveInstance = pallet_collective::Instance2
+		Council: pallet_collective::<Instance2> = 42,
+		// type CouncilMembershipInstance = pallet_membership::Instance2;
+		CouncilMembership: pallet_membership::<Instance2> = 43,
+		// pub type TechnicalCommitteeInstance = pallet_collective::Instance1;
+		TechnicalCommittee: pallet_collective::<Instance1> = 44,
+		// type TechnicalCommitteeMembershipInstance = pallet_membership::Instance1;
+		TechnicalCommitteeMembership: pallet_membership::<Instance1> = 45,
+		Democracy: pallet_democracy = 46,
+
+		// Indexes 50-59 should be reserved for our games.
+		Randomness: pallet_insecure_randomness_collective_flip = 50,
+		AwesomeAvatars: pallet_ajuna_awesome_avatars = 51,
+		BattleMogs: pallet_ajuna_battle_mogs = 52,
+
+
+		// Indexes 60-69 should be reserved for NFT related pallets
+		Nft: pallet_nfts = 60,
+		NftTransfer: pallet_ajuna_nft_transfer = 61,
+		NftStaking: pallet_ajuna_nft_staking = 62,
 	}
 );
 
