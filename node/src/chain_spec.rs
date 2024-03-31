@@ -129,5 +129,19 @@ fn testnet_genesis(
 			// Assign network admin rights.
 			"key": Some(root_key),
 		},
+		"council": {
+			"members": vec![
+			get_account_id_from_seed::<sr25519::Public>("Alice"),
+			get_account_id_from_seed::<sr25519::Public>("Bob"),
+			get_account_id_from_seed::<sr25519::Public>("Charlie"),
+		]
+		},
+		"technicalCommittee": {
+			"members": vec![
+			get_account_id_from_seed::<sr25519::Public>("Alice"),
+			get_account_id_from_seed::<sr25519::Public>("Bob"),
+			get_account_id_from_seed::<sr25519::Public>("Charlie"),
+		]
+		},
 	})
 }
