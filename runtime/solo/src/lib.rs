@@ -78,6 +78,7 @@ use consts::{currency::*, time::*};
 use impls::{CreditToTreasury, OneToOneConversion};
 use pallet_nfts::Call as NftsCall;
 
+use frame_system::pallet_prelude::BlockNumberFor;
 pub use frame_system::Call as SystemCall;
 pub use pallet_balances::Call as BalancesCall;
 use pallet_identity::legacy::IdentityInfo;
@@ -515,7 +516,38 @@ impl pallet_ajuna_awesome_avatars::Config for Runtime {
 	type KeyLimit = KeyLimit;
 	type ValueLimit = ValueLimit;
 	type NftHandler = NftTransfer;
+	type FeeChainMaxLength = AffiliateMaxLevel;
+	type AffiliateHandler = Affiliates;
+	type TournamentHandler = Tournament;
 	type WeightInfo = ();
+}
+
+parameter_types! {
+	pub const AffiliateMaxLevel: u32 = 2;
+}
+
+pub type AffiliatesInstance1 = pallet_ajuna_affiliates::Instance1;
+impl pallet_ajuna_affiliates::Config<AffiliatesInstance1> for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type RuleIdentifier = pallet_ajuna_awesome_avatars::types::AffiliateMethods;
+	type RuntimeRule = pallet_ajuna_awesome_avatars::FeePropagationOf<Runtime>;
+	type AffiliateMaxLevel = AffiliateMaxLevel;
+}
+
+parameter_types! {
+	pub const TournamentPalletId1: PalletId = PalletId(*b"aj/trmt1");
+	pub const MinimumTournamentPhaseDuration: BlockNumber = 100;
+}
+
+type TournamentInstance1 = pallet_ajuna_tournament::Instance1;
+impl pallet_ajuna_tournament::Config<TournamentInstance1> for Runtime {
+	type PalletId = TournamentPalletId1;
+	type RuntimeEvent = RuntimeEvent;
+	type Currency = Balances;
+	type SeasonId = pallet_ajuna_awesome_avatars::types::SeasonId;
+	type EntityId = pallet_ajuna_awesome_avatars::AvatarIdOf<Runtime>;
+	type RankedEntity = pallet_ajuna_awesome_avatars::types::Avatar<BlockNumberFor<Runtime>>;
+	type MinimumTournamentPhaseDuration = MinimumTournamentPhaseDuration;
 }
 
 pub const fn deposit(items: u32, bytes: u32) -> Balance {
@@ -699,6 +731,8 @@ construct_runtime!(
 		NftTransfer: pallet_ajuna_nft_transfer = 25,
 		NftStaking: pallet_ajuna_nft_staking = 26,
 		BattleMogs: pallet_ajuna_battle_mogs = 27,
+		Affiliates: pallet_ajuna_affiliates::<Instance1> = 28,
+		Tournament: pallet_ajuna_tournament::<Instance1> = 29,
 	}
 );
 
@@ -736,7 +770,7 @@ pub type Executive = frame_executive::Executive<
 >;
 
 #[allow(unused_parens)]
-type Migrations = ();
+type Migrations = (pallet_ajuna_awesome_avatars::migration::v6::MigrateToV6<Runtime>,);
 
 #[cfg(feature = "runtime-benchmarks")]
 #[macro_use]

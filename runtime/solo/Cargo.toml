@@ -72,9 +72,11 @@ orml-vesting = { workspace = true }
 
 # Ajuna Pallets
 pallet-ajuna-awesome-avatars = { workspace = true }
+pallet-ajuna-affiliates      = { workspace = true }
 pallet-ajuna-battle-mogs     = { workspace = true }
 pallet-ajuna-nft-staking     = { workspace = true }
 pallet-ajuna-nft-transfer    = { workspace = true }
+pallet-ajuna-tournament      = { workspace = true }
 
 [features]
 default = [ "std" ]
@@ -88,8 +90,10 @@ std = [
     "frame-system/std",
     "orml-vesting/std",
     "pallet-ajuna-awesome-avatars/std",
+    "pallet-ajuna-affiliates/std",
     "pallet-ajuna-nft-transfer/std",
     "pallet-ajuna-nft-staking/std",
+    "pallet-ajuna-tournament/std",
     "pallet-aura/std",
     "pallet-assets/std",
     "pallet-balances/std",
@@ -171,9 +175,11 @@ try-runtime = [
     "pallet-treasury/try-runtime",
     "pallet-utility/try-runtime",
     "pallet-ajuna-awesome-avatars/try-runtime",
+    "pallet-ajuna-affiliates/try-runtime",
     "pallet-ajuna-battle-mogs/try-runtime",
     "pallet-ajuna-nft-transfer/try-runtime",
     "pallet-ajuna-nft-staking/try-runtime",
+    "pallet-ajuna-tournament/try-runtime",
 ]
 
 experimental = [ "pallet-aura/experimental" ]
