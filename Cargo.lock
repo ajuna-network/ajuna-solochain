@@ -4694,7 +4694,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-affiliates"
 version = "0.5.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#ff28670e5676ff54e865fb0abf2c72aa5f9ee509"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#6939c425eb3dd2fe6120a6f1eb75e0053882c38c"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4707,7 +4707,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-awesome-avatars"
 version = "0.5.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#ff28670e5676ff54e865fb0abf2c72aa5f9ee509"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#6939c425eb3dd2fe6120a6f1eb75e0053882c38c"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4726,7 +4726,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-battle-mogs"
 version = "0.5.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#ff28670e5676ff54e865fb0abf2c72aa5f9ee509"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#6939c425eb3dd2fe6120a6f1eb75e0053882c38c"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4740,7 +4740,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-nft-staking"
 version = "0.5.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#ff28670e5676ff54e865fb0abf2c72aa5f9ee509"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#6939c425eb3dd2fe6120a6f1eb75e0053882c38c"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4755,7 +4755,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-nft-transfer"
 version = "0.5.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#ff28670e5676ff54e865fb0abf2c72aa5f9ee509"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#6939c425eb3dd2fe6120a6f1eb75e0053882c38c"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4768,7 +4768,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-tournament"
 version = "0.5.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#ff28670e5676ff54e865fb0abf2c72aa5f9ee509"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=develop#6939c425eb3dd2fe6120a6f1eb75e0053882c38c"
 dependencies = [
  "frame-support",
  "frame-system",
