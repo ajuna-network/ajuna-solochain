@@ -129,9 +129,19 @@ ajuna-solo-runtime = { path = "runtime/solo" }
 pallet-ajuna-awesome-avatars              = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.8.0", default-features = false }
 pallet-ajuna-affiliates                   = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.8.0", default-features = false }
 pallet-ajuna-battle-mogs                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.8.0", default-features = false }
+pallet-ajuna-board                        = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.8.0", default-features = false }
+pallet-ajuna-matchmaker                   = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.8.0", default-features = false }
 pallet-ajuna-nft-transfer                 = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.8.0", default-features = false }
 pallet-ajuna-nft-staking                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.8.0", default-features = false }
 pallet-ajuna-tournament                   = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.8.0", default-features = false }
+
+
+
+
+
+
+
+
 
 [profile.production]
 codegen-units = 1

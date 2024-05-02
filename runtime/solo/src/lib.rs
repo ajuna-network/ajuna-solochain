@@ -768,6 +768,27 @@ impl pallet_ajuna_battle_mogs::Config for Runtime {
 	type WeightInfo = ();
 }
 
+parameter_types! {
+	pub const Players: u8 = 2;
+	pub const Brackets: u8 = 1;
+}
+
+impl pallet_ajuna_matchmaker::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type AmountPlayers = Players;
+	type AmountBrackets = Brackets;
+}
+
+impl pallet_ajuna_board::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type Matchmaker = Matchmaker;
+	type BoardId = u32;
+	type PlayersTurn = pallet_ajuna_board::dot4gravity::Turn;
+	type GameState = pallet_ajuna_board::dot4gravity::GameState<AccountId>;
+	type Game = pallet_ajuna_board::dot4gravity::Game<AccountId>;
+	type Players = Players;
+}
+
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
 	pub struct Runtime
@@ -802,7 +823,9 @@ construct_runtime!(
 		BattleMogs: pallet_ajuna_battle_mogs = 27,
 		Affiliates: pallet_ajuna_affiliates::<Instance1> = 28,
 		Tournament: pallet_ajuna_tournament::<Instance1> = 29,
-		Migrations: pallet_migrations = 30,
+		Matchmaker: pallet_ajuna_matchmaker = 30,
+		Board: pallet_ajuna_board = 31,
+		Migrations: pallet_migrations = 32,
 	}
 );
 
