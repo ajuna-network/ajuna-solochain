@@ -306,6 +306,7 @@ impl pallet_assets::Config for Runtime {
 	type Extra = ();
 	type CallbackHandle = ();
 	type WeightInfo = pallet_assets::weights::SubstrateWeight<Runtime>;
+	type BenchmarkHelper = ();
 }
 
 type BalanceToAssetConverter = BalanceToAssetBalance<Balances, Runtime, OneToOneConversion>;
@@ -880,7 +881,7 @@ impl_runtime_apis! {
 		}
 
 		fn authorities() -> Vec<AuraId> {
-			Aura::authorities().into_inner()
+			pallet_aura::Authorities::<Runtime>::get().into_inner()
 		}
 	}
 
