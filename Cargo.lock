@@ -189,6 +189,7 @@ dependencies = [
  "pallet-grandpa",
  "pallet-identity",
  "pallet-insecure-randomness-collective-flip",
+ "pallet-migrations",
  "pallet-multisig",
  "pallet-nfts",
  "pallet-preimage",
@@ -4964,6 +4965,25 @@ dependencies = [
  "parity-scale-codec",
  "safe-mix",
  "scale-info",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-migrations"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c4fd91afd01c044f2a6c7ea1be39bbe4fd2084c9df79bccc891853735967a268"
+dependencies = [
+ "docify",
+ "frame-benchmarking",
+ "frame-support",
+ "frame-system",
+ "impl-trait-for-tuples",
+ "log",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-core",
  "sp-runtime",
  "sp-std",
 ]

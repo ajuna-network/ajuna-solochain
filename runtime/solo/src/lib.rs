@@ -26,6 +26,7 @@ use crate::gov::EnsureRootOrMoreThanHalfCouncil;
 use frame_support::{
 	construct_runtime,
 	genesis_builder_helper::{build_config, create_default_config},
+	migrations::{FailedMigrationHandler, FailedMigrationHandling, MigrationStatusHandler},
 	pallet_prelude::ConstU32,
 	parameter_types,
 	traits::{
@@ -206,11 +207,73 @@ impl frame_system::Config for Runtime {
 	/// The Block provider type
 	type Block = Block;
 	type RuntimeTask = RuntimeTask;
-	type SingleBlockMigrations = ();
+	type SingleBlockMigrations = SingleBlockMigrations;
 	type MultiBlockMigrator = ();
 	type PreInherents = ();
 	type PostInherents = ();
 	type PostTransactions = ();
+}
+
+type SingleBlockMigrations = (pallet_ajuna_awesome_avatars::migration::v6::MigrateToV6<Runtime>,);
+
+#[cfg(not(feature = "runtime-benchmarks"))]
+use mbm::MultiBlockMigrations;
+
+#[cfg(not(feature = "runtime-benchmarks"))]
+mod mbm {
+	use crate::Runtime;
+	use pallet_ajuna_awesome_avatars::migration::v6::mbm::{
+		LazyMigrationAvatarV5ToV6, LazyMigrationPlayerSeasonConfigsV5ToV6,
+		LazyMigrationSeasonStatsV5ToV6, LazyTradeStatsMapCleanup,
+	};
+
+	use crate::weights::pallet_ajuna_awesome_avatars_mbm::WeightInfo as AaaMbmWeight;
+
+	pub type MultiBlockMigrations = (
+		LazyMigrationPlayerSeasonConfigsV5ToV6<Runtime, AaaMbmWeight<Runtime>>,
+		LazyMigrationSeasonStatsV5ToV6<Runtime, AaaMbmWeight<Runtime>>,
+		LazyMigrationAvatarV5ToV6<Runtime, AaaMbmWeight<Runtime>>,
+		LazyTradeStatsMapCleanup<Runtime, AaaMbmWeight<Runtime>>,
+	);
+}
+
+parameter_types! {
+	pub MbmServiceWeight: Weight = Perbill::from_percent(80) * RuntimeBlockWeights::get().max_block;
+}
+
+impl pallet_migrations::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type CursorMaxLen = ConstU32<65_536>;
+	type IdentifierMaxLen = ConstU32<256>;
+	type MigrationStatusHandler = LoggerMigrationStatusHandler;
+	type FailedMigrationHandler = UnstuckFailedMigration;
+	type MaxServiceWeight = MbmServiceWeight;
+	type WeightInfo = ();
+	#[cfg(feature = "runtime-benchmarks")]
+	type Migrations = pallet_migrations::mock_helpers::MockedMigrations;
+	#[cfg(not(feature = "runtime-benchmarks"))]
+	type Migrations = MultiBlockMigrations;
+}
+
+/// Records all started and completed upgrades in `UpgradesStarted` and `UpgradesCompleted`.
+pub struct LoggerMigrationStatusHandler;
+impl MigrationStatusHandler for LoggerMigrationStatusHandler {
+	fn started() {
+		log::info!("MigrationStatusHandler started");
+	}
+
+	fn completed() {
+		log::info!("MigrationStatusHandler completed");
+	}
+}
+
+/// Records all failed upgrades in `UpgradesFailed`.
+pub struct UnstuckFailedMigration;
+impl FailedMigrationHandler for UnstuckFailedMigration {
+	fn failed(migration: Option<u32>) -> FailedMigrationHandling {
+		log::error!("FailedMigrationHandler failed at: {migration:?}");
+		FailedMigrationHandling::ForceUnstuck
+	}
 }
 
 parameter_types! {
@@ -739,6 +802,7 @@ construct_runtime!(
 		BattleMogs: pallet_ajuna_battle_mogs = 27,
 		Affiliates: pallet_ajuna_affiliates::<Instance1> = 28,
 		Tournament: pallet_ajuna_tournament::<Instance1> = 29,
+		Migrations: pallet_migrations = 30,
 	}
 );
 
@@ -772,11 +836,7 @@ pub type Executive = frame_executive::Executive<
 	frame_system::ChainContext<Runtime>,
 	Runtime,
 	AllPalletsWithSystem,
-	Migrations,
 >;
-
-#[allow(unused_parens)]
-type Migrations = (pallet_ajuna_awesome_avatars::migration::v6::MigrateToV6<Runtime>,);
 
 #[cfg(feature = "runtime-benchmarks")]
 #[macro_use]
