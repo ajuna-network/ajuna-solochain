@@ -203,5 +203,3 @@ try-runtime = [
     "pallet-ajuna-tournament/try-runtime",
     "sp-runtime/try-runtime",
 ]
-
-experimental = [ "pallet-aura/experimental" ]
