@@ -41,6 +41,7 @@ pallet-democracy                           = { workspace = true }
 pallet-grandpa                             = { workspace = true }
 pallet-identity                            = { workspace = true }
 pallet-insecure-randomness-collective-flip = { workspace = true }
+pallet-migrations                          = { workspace = true }
 pallet-multisig                            = { workspace = true }
 pallet-nfts                                = { workspace = true }
 pallet-preimage                            = { workspace = true }
@@ -97,6 +98,7 @@ std = [
     "pallet-democracy/std",
     "pallet-grandpa/std",
     "pallet-identity/std",
+    "pallet-migrations/std",
     "pallet-multisig/std",
     "pallet-nfts/std",
     "pallet-preimage/std",
@@ -133,6 +135,7 @@ runtime-benchmarks = [
     "pallet-balances/runtime-benchmarks",
     "pallet-collective/runtime-benchmarks",
     "pallet-identity/runtime-benchmarks",
+    "pallet-migrations/runtime-benchmarks",
     "pallet-multisig/runtime-benchmarks",
     "pallet-nfts/runtime-benchmarks",
     "pallet-preimage/runtime-benchmarks",
@@ -159,6 +162,7 @@ try-runtime = [
     "pallet-democracy/try-runtime",
     "pallet-grandpa/try-runtime",
     "pallet-identity/try-runtime",
+    "pallet-migrations/try-runtime",
     "pallet-multisig/try-runtime",
     "pallet-nfts/try-runtime",
     "pallet-preimage/try-runtime",
@@ -175,5 +179,3 @@ try-runtime = [
     "pallet-ajuna-nft-transfer/try-runtime",
     "pallet-ajuna-nft-staking/try-runtime",
 ]
-
-experimental = [ "pallet-aura/experimental" ]

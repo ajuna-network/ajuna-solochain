@@ -26,6 +26,7 @@ use crate::gov::EnsureRootOrMoreThanHalfCouncil;
 use frame_support::{
 	construct_runtime,
 	genesis_builder_helper::{build_config, create_default_config},
+	migrations::{FailedMigrationHandler, FailedMigrationHandling, MigrationStatusHandler},
 	pallet_prelude::ConstU32,
 	parameter_types,
 	traits::{
@@ -56,7 +57,7 @@ use sp_runtime::{
 		AccountIdLookup, BlakeTwo256, Block as BlockT, NumberFor, SaturatedConversion, StaticLookup,
 	},
 	transaction_validity::{TransactionSource, TransactionValidity},
-	ApplyExtrinsicResult, MultiSignature, Perbill, Permill,
+	ApplyExtrinsicResult, ExtrinsicInclusionMode, MultiSignature, Perbill, Permill,
 };
 use sp_std::prelude::*;
 
@@ -205,6 +206,11 @@ impl frame_system::Config for Runtime {
 	/// The Block provider type
 	type Block = Block;
 	type RuntimeTask = RuntimeTask;
+	type SingleBlockMigrations = SingleBlockMigrations;
+	type MultiBlockMigrator = pallet_migrations::Pallet<Runtime>;
+	type PreInherents = ();
+	type PostInherents = ();
+	type PostTransactions = ();
 }
 
 parameter_types! {
@@ -217,7 +223,6 @@ impl pallet_aura::Config for Runtime {
 	type MaxAuthorities = MaxAuthorities;
 	type DisabledValidators = ();
 	type AllowMultipleBlocksPerSlot = ConstBool<false>;
-	#[cfg(feature = "experimental")]
 	type SlotDuration = frame_support::traits::ConstU64<SLOT_DURATION>;
 }
 
@@ -419,6 +424,42 @@ where
 {
 	type Extrinsic = UncheckedExtrinsic;
 	type OverarchingCall = RuntimeCall;
+}
+
+parameter_types! {
+	pub MbmServiceWeight: Weight = Perbill::from_percent(80) * RuntimeBlockWeights::get().max_block;
+}
+
+impl pallet_migrations::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type CursorMaxLen = ConstU32<65_536>;
+	type IdentifierMaxLen = ConstU32<256>;
+	type MigrationStatusHandler = LoggerMigrationStatusHandler;
+	type FailedMigrationHandler = UnstuckFailedMigration;
+	type MaxServiceWeight = MbmServiceWeight;
+	type WeightInfo = ();
+	type Migrations = pallet_migrations::mock_helpers::MockedMigrations;
+}
+
+/// Records all started and completed upgrades in `UpgradesStarted` and `UpgradesCompleted`.
+pub struct LoggerMigrationStatusHandler;
+impl MigrationStatusHandler for LoggerMigrationStatusHandler {
+	fn started() {
+		log::info!("MigrationStatusHandler started");
+	}
+
+	fn completed() {
+		log::info!("MigrationStatusHandler completed");
+	}
+}
+
+/// Records all failed upgrades in `UpgradesFailed`.
+pub struct UnstuckFailedMigration;
+impl FailedMigrationHandler for UnstuckFailedMigration {
+	fn failed(migration: Option<u32>) -> FailedMigrationHandling {
+		log::error!("FailedMigrationHandler failed at: {migration:?}");
+		FailedMigrationHandling::ForceUnstuck
+	}
 }
 
 impl pallet_sudo::Config for Runtime {
@@ -699,6 +740,7 @@ construct_runtime!(
 		NftTransfer: pallet_ajuna_nft_transfer = 25,
 		NftStaking: pallet_ajuna_nft_staking = 26,
 		BattleMogs: pallet_ajuna_battle_mogs = 27,
+		Migrations: pallet_migrations = 28,
 	}
 );
 
@@ -732,11 +774,11 @@ pub type Executive = frame_executive::Executive<
 	frame_system::ChainContext<Runtime>,
 	Runtime,
 	AllPalletsWithSystem,
-	Migrations,
+	SingleBlockMigrations,
 >;
 
 #[allow(unused_parens)]
-type Migrations = ();
+type SingleBlockMigrations = ();
 
 #[cfg(feature = "runtime-benchmarks")]
 #[macro_use]
@@ -779,7 +821,7 @@ impl_runtime_apis! {
 			Executive::execute_block(block);
 		}
 
-		fn initialize_block(header: &<Block as BlockT>::Header) {
+		fn initialize_block(header: &<Block as BlockT>::Header) -> ExtrinsicInclusionMode {
 			Executive::initialize_block(header)
 		}
 	}
@@ -841,7 +883,7 @@ impl_runtime_apis! {
 		}
 
 		fn authorities() -> Vec<AuraId> {
-			Aura::authorities().into_inner()
+			pallet_aura::Authorities::<Runtime>::get().into_inner()
 		}
 	}
 
