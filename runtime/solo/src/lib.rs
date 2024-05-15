@@ -208,7 +208,7 @@ impl frame_system::Config for Runtime {
 	type OnSetCode = ();
 	type MaxConsumers = ConstU32<16>;
 	type SingleBlockMigrations = SingleBlockMigrations;
-	type MultiBlockMigrator = ();
+	type MultiBlockMigrator = pallet_migrations::Pallet<Runtime>;
 	type PreInherents = ();
 	type PostInherents = ();
 	type PostTransactions = ();
