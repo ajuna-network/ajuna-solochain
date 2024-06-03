@@ -177,6 +177,8 @@ dependencies = [
  "pallet-ajuna-affiliates",
  "pallet-ajuna-awesome-avatars",
  "pallet-ajuna-battle-mogs",
+ "pallet-ajuna-board",
+ "pallet-ajuna-matchmaker",
  "pallet-ajuna-nft-staking",
  "pallet-ajuna-nft-transfer",
  "pallet-ajuna-tournament",
@@ -1781,6 +1783,15 @@ dependencies = [
  "termcolor",
  "toml 0.8.13",
  "walkdir",
+]
+
+[[package]]
+name = "dot4gravity"
+version = "0.2.0"
+source = "git+https://github.com/ajuna-network/ajuna-games?tag=v0.2.0#325e915c23a98c14bddd317b7f2b87ce76efab10"
+dependencies = [
+ "parity-scale-codec",
+ "scale-info",
 ]
 
 [[package]]
@@ -5189,6 +5200,35 @@ dependencies = [
  "parity-scale-codec",
  "scale-info",
  "sp-io 36.0.0",
+ "sp-runtime 37.0.0",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-ajuna-board"
+version = "0.8.0"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?tag=v0.8.0#80a3614e5fe0cf2df7cab8b1517324ccf4f3af60"
+dependencies = [
+ "dot4gravity",
+ "frame-benchmarking",
+ "frame-support 34.0.0",
+ "frame-system",
+ "pallet-ajuna-matchmaker",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-runtime 37.0.0",
+ "sp-std",
+]
+
+[[package]]
+name = "pallet-ajuna-matchmaker"
+version = "0.8.0"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?tag=v0.8.0#80a3614e5fe0cf2df7cab8b1517324ccf4f3af60"
+dependencies = [
+ "frame-support 34.0.0",
+ "frame-system",
+ "parity-scale-codec",
+ "scale-info",
  "sp-runtime 37.0.0",
  "sp-std",
 ]
