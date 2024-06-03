@@ -152,6 +152,8 @@ runtime-benchmarks = [
     "pallet-ajuna-affiliates/runtime-benchmarks",
     "pallet-ajuna-awesome-avatars/runtime-benchmarks",
     "pallet-ajuna-battle-mogs/runtime-benchmarks",
+    "pallet-ajuna-board/runtime-benchmarks",
+    "pallet-ajuna-matchmaker/runtime-benchmarks",
     "pallet-ajuna-nft-transfer/runtime-benchmarks",
     "pallet-ajuna-nft-staking/runtime-benchmarks",
     "pallet-ajuna-tournament/runtime-benchmarks",
