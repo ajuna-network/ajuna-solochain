@@ -102,36 +102,36 @@ sp-runtime                                 = { version = "35.0.0", default-featu
 sp-session                                 = { version = "31.0.0", default-features = false }
 sp-std                                     = { version = "14.0.0", default-features = false }
 sp-storage                                 = { version = "21.0.0", default-features = false }
-sp-timestamp                               = { version = "30.0.0", default-features = false }
-sp-transaction-pool                        = { version = "30.0.0", default-features = false }
-sp-version                                 = { version = "33.0.0", default-features = false }
+sp-timestamp                               = { version = "32.0.0", default-features = false }
+sp-transaction-pool                        = { version = "32.0.0", default-features = false }
+sp-version                                 = { version = "35.0.0", default-features = false }
 substrate-build-script-utils               = { version = "11.0.0" }
-substrate-frame-rpc-system                 = { version = "32.0.0" }
+substrate-frame-rpc-system                 = { version = "34.0.0" }
 substrate-prometheus-endpoint              = { version = "0.17.0" }
-substrate-wasm-builder                     = { version = "21.0.0" }
+substrate-wasm-builder                     = { version = "22.0.0" }
 try-runtime-cli                            = { version = "0.42.0" }
 
 # Polkadot
-pallet-xcm                    = { version = "11.0.0", default-features = false }
-polkadot-cli                  = { version = "11.0.0", default-features = false }
-polkadot-service              = { version = "11.0.0", default-features = false }
-polkadot-parachain-primitives = { version = "10.0.0", default-features = false }
-polkadot-primitives           = { version = "11.0.0", default-features = false }
-polkadot-runtime-common       = { version = "11.0.0", default-features = false }
+pallet-xcm                    = { version = "13.0.0", default-features = false }
+polkadot-cli                  = { version = "13.0.0", default-features = false }
+polkadot-service              = { version = "13.0.0", default-features = false }
+polkadot-parachain-primitives = { version = "12.0.0", default-features = false }
+polkadot-primitives           = { version = "13.0.0", default-features = false }
+polkadot-runtime-common       = { version = "13.0.0", default-features = false }
 
 # ORML
-orml-vesting = { version = "0.10.0", default-features = false }
+orml-vesting = { version = "0.12.0", default-features = false }
 
 # Runtime
 ajuna-solo-runtime = { path = "runtime/solo" }
 
 # Ajuna Pallets
-pallet-ajuna-awesome-avatars              = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.7.0", default-features = false }
-pallet-ajuna-affiliates                   = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.7.0", default-features = false }
-pallet-ajuna-battle-mogs                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.7.0", default-features = false }
-pallet-ajuna-nft-transfer                 = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.7.0", default-features = false }
-pallet-ajuna-nft-staking                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.7.0", default-features = false }
-pallet-ajuna-tournament                   = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.7.0", default-features = false }
+pallet-ajuna-awesome-avatars              = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.8.0", default-features = false }
+pallet-ajuna-affiliates                   = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.8.0", default-features = false }
+pallet-ajuna-battle-mogs                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.8.0", default-features = false }
+pallet-ajuna-nft-transfer                 = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.8.0", default-features = false }
+pallet-ajuna-nft-staking                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.8.0", default-features = false }
+pallet-ajuna-tournament                   = { git = "https://github.com/ajuna-network/ajuna-pallets.git", tag = "v0.8.0", default-features = false }
 
 [profile.production]
 codegen-units = 1
