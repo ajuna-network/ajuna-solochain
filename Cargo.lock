@@ -5418,20 +5418,20 @@ dependencies = [
 
 [[package]]
 name = "pallet-migrations"
-version = "2.0.0"
+version = "4.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c4fd91afd01c044f2a6c7ea1be39bbe4fd2084c9df79bccc891853735967a268"
+checksum = "4649cba5d8bbb10b47f54a35da9270451e682adb479044ded27763bd7f411ab2"
 dependencies = [
  "docify",
  "frame-benchmarking",
- "frame-support",
+ "frame-support 34.0.0",
  "frame-system",
  "impl-trait-for-tuples",
  "log",
  "parity-scale-codec",
  "scale-info",
- "sp-core",
- "sp-runtime",
+ "sp-core 33.0.1",
+ "sp-runtime 37.0.0",
  "sp-std",
 ]
 
