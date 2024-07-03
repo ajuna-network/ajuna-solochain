@@ -60,7 +60,6 @@ sp-runtime                     = { workspace = true, features = ["std"] }
 sp-timestamp                   = { workspace = true, features = ["std"] }
 substrate-frame-rpc-system     = { workspace = true }
 substrate-prometheus-endpoint  = { workspace = true }
-try-runtime-cli                = { workspace = true }
 
 # Runtime
 ajuna-solo-runtime = { workspace = true, features = ["std"] }
@@ -83,7 +82,6 @@ try-runtime = [
     "frame-system/try-runtime",
     "ajuna-solo-runtime/try-runtime",
     "sp-runtime/try-runtime",
-    "try-runtime-cli/try-runtime",
     "pallet-asset-tx-payment/try-runtime",
     "pallet-transaction-payment/try-runtime",
 ]
