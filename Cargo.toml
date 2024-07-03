@@ -43,7 +43,6 @@ frame-try-runtime                          = { version = "0.41.0", default-featu
 pallet-aura                                = { version = "34.0.0", default-features = false }
 pallet-authorship                          = { version = "35.0.0", default-features = false }
 pallet-assets                              = { version = "36.0.0", default-features = false }
-pallet-asset-tx-payment                    = { version = "35.0.0", default-features = false }
 pallet-balances                            = { version = "36.0.0", default-features = false }
 pallet-collective                          = { version = "35.0.0", default-features = false }
 pallet-democracy                           = { version = "35.0.0", default-features = false }

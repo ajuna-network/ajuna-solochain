@@ -24,7 +24,6 @@ parity-scale-codec = { workspace = true, features = ["std"] }
 frame-benchmarking             = { workspace = true, features = ["std"] }
 frame-benchmarking-cli         = { workspace = true }
 frame-system                   = { workspace = true, features = ["std"] }
-pallet-asset-tx-payment        = { workspace = true, features = ["std"] }
 pallet-transaction-payment     = { workspace = true, features = ["std"] }
 pallet-transaction-payment-rpc = { workspace = true }
 sc-basic-authorship            = { workspace = true }
@@ -76,12 +75,10 @@ runtime-benchmarks = [
     "ajuna-solo-runtime/runtime-benchmarks",
     "sc-service/runtime-benchmarks",
     "sp-runtime/runtime-benchmarks",
-    "pallet-asset-tx-payment/runtime-benchmarks",
 ]
 try-runtime = [
     "frame-system/try-runtime",
     "ajuna-solo-runtime/try-runtime",
     "sp-runtime/try-runtime",
-    "pallet-asset-tx-payment/try-runtime",
     "pallet-transaction-payment/try-runtime",
 ]

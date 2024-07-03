@@ -106,7 +106,6 @@ dependencies = [
  "hex-literal",
  "jsonrpsee",
  "log",
- "pallet-asset-tx-payment",
  "pallet-transaction-payment",
  "pallet-transaction-payment-rpc",
  "parity-scale-codec",
@@ -168,7 +167,6 @@ dependencies = [
  "pallet-ajuna-nft-staking",
  "pallet-ajuna-nft-transfer",
  "pallet-ajuna-tournament",
- "pallet-asset-tx-payment",
  "pallet-assets",
  "pallet-aura",
  "pallet-balances",
@@ -4968,25 +4966,6 @@ dependencies = [
  "parity-scale-codec",
  "scale-info",
  "sp-arithmetic",
- "sp-runtime",
- "sp-std",
-]
-
-[[package]]
-name = "pallet-asset-tx-payment"
-version = "35.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7686ab6ba85afc432794a9dbc3e7399cb1a3b1bcfdd487ce0eb2aa81c11c2497"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-transaction-payment",
- "parity-scale-codec",
- "scale-info",
- "serde",
- "sp-core",
- "sp-io",
  "sp-runtime",
  "sp-std",
 ]
