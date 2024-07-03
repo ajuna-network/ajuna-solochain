@@ -31,7 +31,7 @@ use frame_support::{
 	parameter_types,
 	traits::{
 		fungible::HoldConsideration,
-		tokens::{PayFromAccount, UnityAssetBalanceConversion},
+		tokens::{imbalance::ResolveTo, PayFromAccount, UnityAssetBalanceConversion},
 		AsEnsureOriginWithArg, ConstBool, Contains, Footprint,
 	},
 	weights::{
@@ -42,10 +42,8 @@ use frame_support::{
 };
 
 use frame_system::{EnsureRoot, EnsureSigned};
-use pallet_asset_tx_payment::FungiblesAdapter;
-use pallet_assets::BalanceToAssetBalance;
 use pallet_grandpa::AuthorityId as GrandpaId;
-use pallet_transaction_payment::CurrencyAdapter;
+use pallet_transaction_payment::FungibleAdapter;
 use parity_scale_codec::{Decode, Encode, MaxEncodedLen};
 use scale_info::TypeInfo;
 use sp_api::impl_runtime_apis;
@@ -67,7 +65,6 @@ use sp_version::RuntimeVersion;
 
 mod consts;
 mod gov;
-mod impls;
 mod types;
 
 pub use crate::types::{
@@ -76,7 +73,6 @@ pub use crate::types::{
 };
 pub use consts::currency;
 use consts::{currency::*, time::*};
-use impls::{CreditToTreasury, OneToOneConversion};
 use pallet_nfts::Call as NftsCall;
 
 use frame_system::pallet_prelude::BlockNumberFor;
@@ -334,7 +330,7 @@ impl pallet_balances::Config for Runtime {
 
 impl pallet_transaction_payment::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
-	type OnChargeTransaction = CurrencyAdapter<Balances, Treasury>;
+	type OnChargeTransaction = FungibleAdapter<Balances, ResolveTo<TreasuryAccount, Balances>>;
 	type WeightToFee = IdentityFee<Balance>;
 	type LengthToFee = IdentityFee<Balance>;
 	type FeeMultiplierUpdate = ();
@@ -370,14 +366,6 @@ impl pallet_assets::Config for Runtime {
 	type WeightInfo = pallet_assets::weights::SubstrateWeight<Runtime>;
 	#[cfg(feature = "runtime-benchmarks")]
 	type BenchmarkHelper = ();
-}
-
-type BalanceToAssetConverter = BalanceToAssetBalance<Balances, Runtime, OneToOneConversion>;
-
-impl pallet_asset_tx_payment::Config for Runtime {
-	type RuntimeEvent = RuntimeEvent;
-	type Fungibles = Assets;
-	type OnChargeAssetTransaction = FungiblesAdapter<BalanceToAssetConverter, CreditToTreasury>;
 }
 
 parameter_types! {
@@ -464,7 +452,7 @@ where
 			frame_system::CheckEra::<Runtime>::from(era),
 			frame_system::CheckNonce::<Runtime>::from(nonce),
 			frame_system::CheckWeight::<Runtime>::new(),
-			pallet_asset_tx_payment::ChargeAssetTxPayment::<Runtime>::from(tip, None),
+			pallet_transaction_payment::ChargeTransactionPayment::<Runtime>::from(tip),
 		);
 		let raw_payload = SignedPayload::new(call, extra)
 			.map_err(|e| {
@@ -778,7 +766,7 @@ construct_runtime!(
 		Grandpa: pallet_grandpa = 3,
 		Balances: pallet_balances = 4,
 		TransactionPayment: pallet_transaction_payment = 5,
-		AssetTxPayment: pallet_asset_tx_payment = 6,
+		// AssetTxPayment: pallet_asset_tx_payment = 6,
 		Assets: pallet_assets = 7,
 		Vesting: orml_vesting = 8,
 		// pub type CouncilCollective = pallet_collective::Instance1;
@@ -821,7 +809,7 @@ pub type SignedExtra = (
 	frame_system::CheckEra<Runtime>,
 	frame_system::CheckNonce<Runtime>,
 	frame_system::CheckWeight<Runtime>,
-	pallet_asset_tx_payment::ChargeAssetTxPayment<Runtime>,
+	pallet_transaction_payment::ChargeTransactionPayment<Runtime>,
 );
 
 /// Unchecked extrinsic type as expected by this runtime.

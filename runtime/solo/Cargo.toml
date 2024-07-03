@@ -32,7 +32,6 @@ frame-system                               = { workspace = true }
 frame-system-benchmarking                  = { workspace = true, optional = true }
 frame-system-rpc-runtime-api               = { workspace = true }
 frame-try-runtime                          = { workspace = true }
-pallet-asset-tx-payment                    = { workspace = true }
 pallet-assets                              = { workspace = true }
 pallet-aura                                = { workspace = true }
 pallet-balances                            = { workspace = true }
@@ -99,7 +98,6 @@ std = [
     "pallet-ajuna-nft-transfer/std",
     "pallet-ajuna-nft-staking/std",
     "pallet-ajuna-tournament/std",
-    "pallet-asset-tx-payment/std",
     "pallet-aura/std",
     "pallet-assets/std",
     "pallet-balances/std",
@@ -150,7 +148,6 @@ runtime-benchmarks = [
     "pallet-ajuna-nft-transfer/runtime-benchmarks",
     "pallet-ajuna-nft-staking/runtime-benchmarks",
     "pallet-ajuna-tournament/runtime-benchmarks",
-    "pallet-asset-tx-payment/runtime-benchmarks",
     "pallet-assets/runtime-benchmarks",
     "pallet-collective/runtime-benchmarks",
     "pallet-democracy/runtime-benchmarks",
@@ -176,7 +173,6 @@ try-runtime = [
     "frame-try-runtime/try-runtime",
     "orml-vesting/try-runtime",
     "pallet-assets/try-runtime",
-    "pallet-asset-tx-payment/try-runtime",
     "pallet-aura/try-runtime",
     "pallet-balances/try-runtime",
     "pallet-collective/try-runtime",
