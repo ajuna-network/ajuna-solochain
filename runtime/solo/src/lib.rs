@@ -32,7 +32,7 @@ use frame_support::{
 	traits::{
 		fungible::HoldConsideration,
 		tokens::{imbalance::ResolveTo, PayFromAccount, UnityAssetBalanceConversion},
-		AsEnsureOriginWithArg, ConstBool, Contains, Footprint,
+		AsEnsureOriginWithArg, ConstBool, Contains, Footprint, LinearStoragePrice,
 	},
 	weights::{
 		constants::{RocksDbWeight, WEIGHT_REF_TIME_PER_SECOND},
@@ -40,7 +40,6 @@ use frame_support::{
 	},
 	PalletId,
 };
-
 use frame_system::{EnsureRoot, EnsureSigned};
 use pallet_grandpa::AuthorityId as GrandpaId;
 use pallet_transaction_payment::FungibleAdapter;
@@ -66,6 +65,7 @@ use sp_version::RuntimeVersion;
 mod consts;
 mod gov;
 mod types;
+mod weights;
 
 pub use crate::types::{
 	AccountId, AccountPublic, AssetId, Balance, BlockNumber, CollectionId, Hash, ItemId, Moment,
@@ -637,20 +637,24 @@ impl pallet_utility::Config for Runtime {
 	type WeightInfo = ();
 }
 
-pub struct ConvertDeposit;
-
-impl Convert<Footprint, Balance> for ConvertDeposit {
-	fn convert(a: Footprint) -> Balance {
-		(Balance::from(a.count) * 2) + Balance::from(a.size)
-	}
+parameter_types! {
+	pub const PreimageBaseDeposit: Balance = deposit(2, 64);
+	pub const PreimageByteDeposit: Balance = deposit(0, 1);
+	pub const PreimageHoldReason: RuntimeHoldReason =
+		RuntimeHoldReason::Preimage(pallet_preimage::HoldReason::Preimage);
 }
 
 impl pallet_preimage::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
-	type WeightInfo = ();
+	type WeightInfo = weights::pallet_preimage::WeightInfo<Runtime>;
 	type Currency = Balances;
 	type ManagerOrigin = EnsureRoot<AccountId>;
-	type Consideration = HoldConsideration<AccountId, Balances, (), ConvertDeposit>;
+	type Consideration = HoldConsideration<
+		AccountId,
+		Balances,
+		PreimageHoldReason,
+		LinearStoragePrice<PreimageBaseDeposit, PreimageByteDeposit, Balance>,
+	>;
 }
 
 parameter_types! {
