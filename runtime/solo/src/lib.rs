@@ -575,8 +575,8 @@ impl pallet_ajuna_awesome_avatars::Config for Runtime {
 	type ValueLimit = ValueLimit;
 	type NftHandler = NftTransfer;
 	type FeeChainMaxLength = AffiliateMaxLevel;
-	type AffiliateHandler = Affiliates;
-	type TournamentHandler = Tournament;
+	type AffiliateHandler = AffiliatesAAA;
+	type TournamentHandler = TournamentAAA;
 	type WeightInfo = ();
 }
 
@@ -789,8 +789,8 @@ construct_runtime!(
 		NftTransfer: pallet_ajuna_nft_transfer = 25,
 		NftStaking: pallet_ajuna_nft_staking = 26,
 		BattleMogs: pallet_ajuna_battle_mogs = 27,
-		Affiliates: pallet_ajuna_affiliates::<Instance1> = 28,
-		Tournament: pallet_ajuna_tournament::<Instance1> = 29,
+		AffiliatesAAA: pallet_ajuna_affiliates::<Instance1> = 28,
+		TournamentAAA: pallet_ajuna_tournament::<Instance1> = 29,
 		Migrations: pallet_migrations = 30,
 	}
 );
