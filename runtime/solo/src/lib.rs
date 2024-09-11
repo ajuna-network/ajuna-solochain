@@ -577,6 +577,7 @@ impl pallet_ajuna_awesome_avatars::Config for Runtime {
 	type FeeChainMaxLength = AffiliateMaxLevel;
 	type AffiliateHandler = AffiliatesAAA;
 	type TournamentHandler = TournamentAAA;
+	type BattleHandler = BattleRoyaleAAA;
 	type WeightInfo = ();
 }
 
@@ -606,6 +607,11 @@ impl pallet_ajuna_tournament::Config<TournamentInstance1> for Runtime {
 	type EntityId = pallet_ajuna_awesome_avatars::AvatarIdOf<Runtime>;
 	type RankedEntity = pallet_ajuna_awesome_avatars::types::Avatar<BlockNumberFor<Runtime>>;
 	type MinimumTournamentPhaseDuration = MinimumTournamentPhaseDuration;
+}
+
+type BattleInstance1 = pallet_ajuna_battle_royale::Instance1;
+impl pallet_ajuna_battle_royale::Config<BattleInstance1> for Runtime {
+	type RuntimeEvent = RuntimeEvent;
 }
 
 pub const fn deposit(items: u32, bytes: u32) -> Balance {
@@ -791,7 +797,8 @@ construct_runtime!(
 		BattleMogs: pallet_ajuna_battle_mogs = 27,
 		AffiliatesAAA: pallet_ajuna_affiliates::<Instance1> = 28,
 		TournamentAAA: pallet_ajuna_tournament::<Instance1> = 29,
-		Migrations: pallet_migrations = 30,
+		BattleRoyaleAAA: pallet_ajuna_battle_royale::<Instance1> = 30,
+		Migrations: pallet_migrations = 40,
 	}
 );
 

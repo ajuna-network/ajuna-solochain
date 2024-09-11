@@ -75,6 +75,7 @@ orml-vesting = { workspace = true }
 pallet-ajuna-awesome-avatars = { workspace = true }
 pallet-ajuna-affiliates      = { workspace = true }
 pallet-ajuna-battle-mogs     = { workspace = true }
+pallet-ajuna-battle-royale   = { workspace = true }
 pallet-ajuna-nft-staking     = { workspace = true }
 pallet-ajuna-nft-transfer    = { workspace = true }
 pallet-ajuna-tournament      = { workspace = true }
@@ -97,6 +98,7 @@ std = [
     "pallet-ajuna-awesome-avatars/std",
     "pallet-ajuna-affiliates/std",
     "pallet-ajuna-battle-mogs/std",
+    "pallet-ajuna-battle-royale/std",
     "pallet-ajuna-nft-transfer/std",
     "pallet-ajuna-nft-staking/std",
     "pallet-ajuna-tournament/std",
@@ -148,6 +150,7 @@ runtime-benchmarks = [
     "pallet-ajuna-affiliates/runtime-benchmarks",
     "pallet-ajuna-awesome-avatars/runtime-benchmarks",
     "pallet-ajuna-battle-mogs/runtime-benchmarks",
+    "pallet-ajuna-battle-royale/runtime-benchmarks",
     "pallet-ajuna-nft-transfer/runtime-benchmarks",
     "pallet-ajuna-nft-staking/runtime-benchmarks",
     "pallet-ajuna-tournament/runtime-benchmarks",
@@ -197,6 +200,7 @@ try-runtime = [
     "pallet-ajuna-awesome-avatars/try-runtime",
     "pallet-ajuna-affiliates/try-runtime",
     "pallet-ajuna-battle-mogs/try-runtime",
+    "pallet-ajuna-battle-royale/try-runtime",
     "pallet-ajuna-nft-transfer/try-runtime",
     "pallet-ajuna-nft-staking/try-runtime",
     "pallet-ajuna-tournament/try-runtime",
