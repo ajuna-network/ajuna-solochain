@@ -4915,7 +4915,7 @@ checksum = "b15813163c1d831bf4a13c3610c05c0d03b39feb07f7e09fa234dac9b15aaf39"
 [[package]]
 name = "pallet-ajuna-affiliates"
 version = "0.13.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=pallet-battle-royale#2f33d0094c16cc6ed7500c2b35837c63677355ae"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=pallet-battle-royale#440b2788ca69d80d78c5c257e81d15c6235b983a"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4928,7 +4928,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-awesome-avatars"
 version = "0.13.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=pallet-battle-royale#2f33d0094c16cc6ed7500c2b35837c63677355ae"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=pallet-battle-royale#440b2788ca69d80d78c5c257e81d15c6235b983a"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -4949,7 +4949,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-battle-mogs"
 version = "0.13.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=pallet-battle-royale#2f33d0094c16cc6ed7500c2b35837c63677355ae"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=pallet-battle-royale#440b2788ca69d80d78c5c257e81d15c6235b983a"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -4964,7 +4964,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-battle-royale"
 version = "0.13.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=pallet-battle-royale#2f33d0094c16cc6ed7500c2b35837c63677355ae"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=pallet-battle-royale#440b2788ca69d80d78c5c257e81d15c6235b983a"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4981,7 +4981,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-nft-staking"
 version = "0.13.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=pallet-battle-royale#2f33d0094c16cc6ed7500c2b35837c63677355ae"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=pallet-battle-royale#440b2788ca69d80d78c5c257e81d15c6235b983a"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -4996,7 +4996,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-nft-transfer"
 version = "0.13.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=pallet-battle-royale#2f33d0094c16cc6ed7500c2b35837c63677355ae"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=pallet-battle-royale#440b2788ca69d80d78c5c257e81d15c6235b983a"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -5009,7 +5009,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-tournament"
 version = "0.13.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=pallet-battle-royale#2f33d0094c16cc6ed7500c2b35837c63677355ae"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=pallet-battle-royale#440b2788ca69d80d78c5c257e81d15c6235b983a"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -5442,8 +5442,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4e69bf016dc406eff7d53a7d3f7cf1c2e72c82b9088aac1118591e36dd2cd3e9"
 dependencies = [
  "bitcoin_hashes",
- "rand 0.7.3",
- "rand_core 0.5.1",
+ "rand 0.8.5",
+ "rand_core 0.6.4",
  "serde",
  "unicode-normalization",
 ]
@@ -9968,7 +9968,7 @@ checksum = "97fee6b57c6a41524a810daee9286c02d7752c4253064d0b05472833a438f675"
 dependencies = [
  "cfg-if",
  "digest 0.10.7",
- "rand 0.7.3",
+ "rand 0.8.5",
  "static_assertions",
 ]
 
