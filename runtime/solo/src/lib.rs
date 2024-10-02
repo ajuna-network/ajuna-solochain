@@ -23,6 +23,8 @@
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
 use crate::gov::EnsureRootOrMoreThanHalfCouncil;
+
+use core::num::NonZeroU32;
 use frame_support::{
 	construct_runtime,
 	genesis_builder_helper::{build_state, get_preset},
@@ -609,9 +611,30 @@ impl pallet_ajuna_tournament::Config<TournamentInstance1> for Runtime {
 	type MinimumTournamentPhaseDuration = MinimumTournamentPhaseDuration;
 }
 
+parameter_types! {
+	// Input lasts 2 blocks
+	pub const InputPhaseDuration: NonZeroU32 = NonZeroU32::MIN.saturating_add(1);
+	// Reveal lasts 2 blocks
+	pub const RevealPhaseDuration: NonZeroU32 = NonZeroU32::MIN.saturating_add(1);
+	// Execution lasts 1 block
+	pub const ExecutionPhaseDuration: NonZeroU32 = NonZeroU32::MIN;
+	// Shrink lasts 1 block
+	pub const ShrinkPhaseDuration: NonZeroU32 = NonZeroU32::MIN;
+	// Verification lasts 1 block
+	pub const VerificationPhaseDuration: NonZeroU32 = NonZeroU32::MIN;
+	// Idle lasts 3 blocks
+	pub const IdlePhaseDuration: NonZeroU32 = NonZeroU32::MIN.saturating_add(2);
+}
+
 type BattleInstance1 = pallet_ajuna_battle_royale::Instance1;
 impl pallet_ajuna_battle_royale::Config<BattleInstance1> for Runtime {
 	type RuntimeEvent = RuntimeEvent;
+	type InputPhaseDuration = InputPhaseDuration;
+	type RevealPhaseDuration = RevealPhaseDuration;
+	type ExecutionPhaseDuration = ExecutionPhaseDuration;
+	type ShrinkPhaseDuration = ShrinkPhaseDuration;
+	type VerificationPhaseDuration = VerificationPhaseDuration;
+	type IdlePhaseDuration = IdlePhaseDuration;
 }
 
 pub const fn deposit(items: u32, bytes: u32) -> Balance {
