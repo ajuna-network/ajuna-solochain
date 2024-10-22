@@ -40,7 +40,6 @@ use frame_support::{
 	},
 	PalletId,
 };
-
 use frame_system::{EnsureRoot, EnsureSigned};
 use pallet_grandpa::AuthorityId as GrandpaId;
 use pallet_transaction_payment::FungibleAdapter;
@@ -80,7 +79,7 @@ pub use frame_system::Call as SystemCall;
 pub use pallet_balances::Call as BalancesCall;
 use pallet_identity::legacy::IdentityInfo;
 pub use pallet_timestamp::Call as TimestampCall;
-use sp_runtime::traits::{Convert, IdentityLookup};
+use sp_runtime::traits::{Convert, IdentifyAccount, IdentityLookup};
 
 /// Opaque types. These are used by the CLI to instantiate machinery that don't need to know
 /// the specifics of the runtime. They can then be made to be agnostic over specific formats
@@ -396,13 +395,8 @@ parameter_types! {
 
 impl pallet_treasury::Config for Runtime {
 	type Currency = Balances;
-	type ApproveOrigin = EnsureRootOrMoreThanHalfCouncil;
 	type RejectOrigin = EnsureRootOrMoreThanHalfCouncil;
 	type RuntimeEvent = RuntimeEvent;
-	type OnSlash = ();
-	type ProposalBond = FivePercent;
-	type ProposalBondMinimum = MinimumProposalBond;
-	type ProposalBondMaximum = MaximumProposalBond;
 	type SpendPeriod = OneWeek;
 	type Burn = ZeroPercent;
 	type PalletId = TreasuryPalletId;
@@ -845,7 +839,8 @@ pub struct NftBenchmarkHelper;
 
 #[cfg(feature = "runtime-benchmarks")]
 impl<CollectionId: From<u16>, ItemId: From<[u8; 32]>>
-	pallet_nfts::BenchmarkHelper<CollectionId, ItemId> for NftBenchmarkHelper
+	pallet_nfts::BenchmarkHelper<CollectionId, ItemId, AccountPublic, AccountId, Signature>
+	for NftBenchmarkHelper
 {
 	fn collection(i: u16) -> CollectionId {
 		i.into()
@@ -856,6 +851,18 @@ impl<CollectionId: From<u16>, ItemId: From<[u8; 32]>>
 		id[0] = bytes[0];
 		id[1] = bytes[1];
 		id.into()
+	}
+
+	fn signer() -> (sp_runtime::MultiSigner, sp_runtime::AccountId32) {
+		let public = sp_io::crypto::sr25519_generate(0.into(), None);
+		let account = sp_runtime::MultiSigner::Sr25519(public).into_account();
+		(public.into(), account)
+	}
+	fn sign(signer: &sp_runtime::MultiSigner, message: &[u8]) -> sp_runtime::MultiSignature {
+		sp_runtime::MultiSignature::Sr25519(
+			sp_io::crypto::sr25519_sign(0.into(), &signer.clone().try_into().unwrap(), message)
+				.unwrap(),
+		)
 	}
 }
 
