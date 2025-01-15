@@ -23,6 +23,10 @@
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
 use crate::gov::EnsureRootOrMoreThanHalfCouncil;
+use ajuna_payment_handler::{
+	AllowAllAssets, AssetGameFeeHandler, WithdrawCreditOrVoucher, WithdrawFungibles, WithdrawKind,
+	WithdrawWhitelistedCredit,
+};
 use frame_support::{
 	construct_runtime,
 	genesis_builder_helper::{build_state, get_preset},
@@ -58,12 +62,16 @@ use sp_runtime::{
 };
 use sp_std::prelude::*;
 
+use example_transition::prelude::*;
+use frame_support::traits::fungible::NativeOrWithId;
 #[cfg(feature = "std")]
 use sp_version::NativeVersion;
 use sp_version::RuntimeVersion;
 
 mod consts;
+mod fee_handler;
 mod gov;
+mod mediators;
 mod types;
 
 pub use crate::types::{
@@ -211,6 +219,7 @@ impl frame_system::Config for Runtime {
 
 type SingleBlockMigrations = (pallet_ajuna_awesome_avatars::migration::v6::MigrateToV6<Runtime>,);
 
+use crate::{fee_handler::HeroJamFeeHandler, mediators::HeroJamAssetMediator};
 #[cfg(not(feature = "runtime-benchmarks"))]
 use mbm::MultiBlockMigrations;
 
@@ -554,36 +563,64 @@ impl pallet_proxy::Config for Runtime {
 	type AnnouncementDepositFactor = AnnouncementDepositFactor;
 }
 
-impl pallet_insecure_randomness_collective_flip::Config for Runtime {}
-
 parameter_types! {
-	pub const AwesomeAvatarsPalletId: PalletId = PalletId(*b"aj/aaatr");
+	pub const SageHeroJamId: PalletId = PalletId(*b"sage/hjm");
 }
 
-impl pallet_ajuna_awesome_avatars::Config for Runtime {
-	type PalletId = AwesomeAvatarsPalletId;
-	type RuntimeEvent = RuntimeEvent;
+pub type HeroJamAsset = Asset<BlockNumberFor<Runtime>>;
+pub type HeroJamGameTransition =
+	GameTransition<AccountId, BlockNumberFor<Runtime>, HeroJamAssetMediator, HeroJamAssetMediator>;
+
+pub type HeroJamAssetFilter = GameFilter<BlockNumberFor<Runtime>>;
+pub type HeroJamBenchmarkHelper = GameBenchmarkHelper<BlockNumberFor<Runtime>>;
+
+pub type SageHeroJamInstance = pallet_sage::Instance1;
+impl pallet_sage::Config<SageHeroJamInstance> for Runtime {
+	type PalletId = SageHeroJamId;
+	type SageGameTransition = HeroJamGameTransition;
+	type SeasonHandler = SeasonsHeroJam;
+	type FeeHandler = HeroJamFeeHandler;
+	type PaymentKind = WithdrawKind<NativeOrWithId<AssetId>>;
+	type FilterHandler = HeroJamAssetFilter;
 	type Currency = Balances;
-	type Randomness = Randomness;
-	type KeyLimit = KeyLimit;
-	type ValueLimit = ValueLimit;
-	type NftHandler = NftTransfer;
-	type FeeChainMaxLength = AffiliateMaxLevel;
-	type AffiliateHandler = AffiliatesAAA;
-	type TournamentHandler = TournamentAAA;
+	type RuntimeEvent = RuntimeEvent;
 	type WeightInfo = ();
+	#[cfg(feature = "runtime-benchmarks")]
+	type BenchmarkHelper = HeroJamBenchmarkHelper;
+}
+
+pub type HeroJamSeasonId = u8;
+
+pub type SeasonsHeroJamInstance = pallet_ajuna_seasons::Instance1;
+impl pallet_ajuna_seasons::Config<SeasonsHeroJamInstance> for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type SeasonId = HeroJamSeasonId;
+	type SeasonData = ();
+	type AssetId = AssetId;
+	type AccountHandler = SageHeroJam;
+	type Currency = Balances;
+	type WeightInfo = ();
+	#[cfg(feature = "runtime-benchmarks")]
+	type BenchmarkHelper = ();
 }
 
 parameter_types! {
 	pub const AffiliateMaxLevel: u32 = 2;
 }
 
-pub type AffiliatesInstance1 = pallet_ajuna_affiliates::Instance1;
-impl pallet_ajuna_affiliates::Config<AffiliatesInstance1> for Runtime {
+pub type AffiliatesHeroJamInstance = pallet_ajuna_affiliates::Instance1;
+impl pallet_ajuna_affiliates::Config<AffiliatesHeroJamInstance> for Runtime {
 	type RuntimeEvent = RuntimeEvent;
+	type Currency = Balances;
+	type WhitelistKey = ();
+	type AccountManager = SageHeroJam;
 	type RuleIdentifier = pallet_ajuna_awesome_avatars::types::AffiliateMethods;
-	type RuntimeRule = pallet_ajuna_awesome_avatars::FeePropagationOf<Runtime>;
 	type AffiliateMaxLevel = AffiliateMaxLevel;
+	type UnlockParameters = ();
+	type AffiliatesUnlockRules = ();
+	type WeightInfo = ();
+	#[cfg(feature = "runtime-benchmarks")]
+	type BenchmarkHelper = ();
 }
 
 parameter_types! {
@@ -591,15 +628,21 @@ parameter_types! {
 	pub const MinimumTournamentPhaseDuration: BlockNumber = 100;
 }
 
-type TournamentInstance1 = pallet_ajuna_tournament::Instance1;
-impl pallet_ajuna_tournament::Config<TournamentInstance1> for Runtime {
+type TournamentHeroJamInstance = pallet_ajuna_tournament::Instance1;
+impl pallet_ajuna_tournament::Config<TournamentHeroJamInstance> for Runtime {
 	type PalletId = TournamentPalletId1;
 	type RuntimeEvent = RuntimeEvent;
 	type Currency = Balances;
-	type SeasonId = pallet_ajuna_awesome_avatars::types::SeasonId;
-	type EntityId = pallet_ajuna_awesome_avatars::AvatarIdOf<Runtime>;
-	type RankedEntity = pallet_ajuna_awesome_avatars::types::Avatar<BlockNumberFor<Runtime>>;
+	type TournamentCategoryId = ();
+	type EntityId = AssetId;
+	type RankedEntity = HeroJamAsset;
+	type EntityRanker = ();
+	type AccountManager = SageHeroJam;
+	type AssetManager = SageHeroJam;
 	type MinimumTournamentPhaseDuration = MinimumTournamentPhaseDuration;
+	type WeightInfo = ();
+	#[cfg(feature = "runtime-benchmarks")]
+	type BenchmarkHelper = ();
 }
 
 pub const fn deposit(items: u32, bytes: u32) -> Balance {
@@ -710,45 +753,18 @@ impl pallet_ajuna_nft_transfer::Config for Runtime {
 	type PalletId = NftTransferPalletId;
 	type RuntimeEvent = RuntimeEvent;
 	type CollectionId = CollectionId;
+	type Item = ();
 	type ItemId = Hash;
 	type ItemConfig = pallet_nfts::ItemConfig;
+	type AssetManager = ();
+	type AccountManager = ();
+	type Fungible = ();
 	type KeyLimit = KeyLimit;
 	type ValueLimit = ValueLimit;
 	type NftHelper = Nft;
-}
-
-parameter_types! {
-	pub const NftStakingPalletId: PalletId = PalletId(*b"aj/nftst");
-	pub const MaxContracts: u32 = 1_000;
-	pub const MaxStakingClauses: u32 = 20;
-	pub const MaxFeeClauses: u32 = 20;
-	pub const MaxMetadataLenght: u32 = 100;
-}
-
-impl pallet_ajuna_nft_staking::Config for Runtime {
-	type PalletId = NftStakingPalletId;
-	type RuntimeEvent = RuntimeEvent;
-	type Currency = Balances;
-	type CollectionId = CollectionId;
-	type ItemId = Hash;
-	type ItemConfig = pallet_nfts::ItemConfig;
-	type NftHelper = Nft;
-	type MaxContracts = MaxContracts;
-	type MaxStakingClauses = MaxStakingClauses;
-	type MaxFeeClauses = MaxFeeClauses;
-	type MaxMetadataLength = MaxMetadataLenght;
-	type KeyLimit = KeyLimit;
-	type ValueLimit = ValueLimit;
+	type WeightInfo = ();
 	#[cfg(feature = "runtime-benchmarks")]
 	type BenchmarkHelper = ();
-	type WeightInfo = ();
-}
-
-impl pallet_ajuna_battle_mogs::Config for Runtime {
-	type RuntimeEvent = RuntimeEvent;
-	type Currency = Balances;
-	type Randomness = Randomness;
-	type WeightInfo = ();
 }
 
 // Create the runtime by composing the FRAME pallets that were previously configured.
@@ -777,15 +793,18 @@ construct_runtime!(
 		Multisig: pallet_multisig = 17,
 		Utility: pallet_utility = 18,
 		Preimage: pallet_preimage = 19,
-		AwesomeAvatars: pallet_ajuna_awesome_avatars = 22,
-		Randomness: pallet_insecure_randomness_collective_flip = 23,
-		Nft: pallet_nfts = 24,
-		NftTransfer: pallet_ajuna_nft_transfer = 25,
-		NftStaking: pallet_ajuna_nft_staking = 26,
-		BattleMogs: pallet_ajuna_battle_mogs = 27,
-		AffiliatesAAA: pallet_ajuna_affiliates::<Instance1> = 28,
-		TournamentAAA: pallet_ajuna_tournament::<Instance1> = 29,
-		Migrations: pallet_migrations = 30,
+		// Migrations
+		Migrations: pallet_migrations = 20,
+		// SAGE - Nft
+		Nft: pallet_nfts = 30,
+		NftTransfer: pallet_ajuna_nft_transfer = 31,
+		// SAGE - Extra
+		AffiliatesHeroJam: pallet_ajuna_affiliates::<Instance1> = 32,
+		TournamentHeroJam: pallet_ajuna_tournament::<Instance1> = 33,
+		// SAGE - Seasons
+		SeasonsHeroJam: pallet_ajuna_seasons::<Instance1> = 34,
+		// SAGE
+		SageHeroJam: pallet_sage::<Instance1> = 40,
 	}
 );
 
