@@ -23,10 +23,9 @@
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
 use crate::gov::EnsureRootOrMoreThanHalfCouncil;
-use ajuna_payment_handler::{
-	AllowAllAssets, AssetGameFeeHandler, WithdrawCreditOrVoucher, WithdrawFungibles, WithdrawKind,
-	WithdrawWhitelistedCredit,
-};
+use ajuna_payment_handler::WithdrawKind;
+use ajuna_primitives::season_manager::Validate;
+use example_transition::prelude::*;
 use frame_support::{
 	construct_runtime,
 	genesis_builder_helper::{build_state, get_preset},
@@ -34,7 +33,7 @@ use frame_support::{
 	pallet_prelude::ConstU32,
 	parameter_types,
 	traits::{
-		fungible::HoldConsideration,
+		fungible::{HoldConsideration, NativeOrWithId},
 		tokens::{imbalance::ResolveTo, PayFromAccount, UnityAssetBalanceConversion},
 		AsEnsureOriginWithArg, ConstBool, Contains, Footprint,
 	},
@@ -51,19 +50,16 @@ use parity_scale_codec::{Decode, Encode, MaxEncodedLen};
 use scale_info::TypeInfo;
 use sp_api::impl_runtime_apis;
 use sp_consensus_aura::sr25519::AuthorityId as AuraId;
-use sp_core::{crypto::KeyTypeId, Get, OpaqueMetadata};
+use sp_core::{crypto::KeyTypeId, OpaqueMetadata};
 use sp_runtime::{
 	create_runtime_str, generic, impl_opaque_keys,
 	traits::{
 		AccountIdLookup, BlakeTwo256, Block as BlockT, NumberFor, SaturatedConversion, StaticLookup,
 	},
 	transaction_validity::{TransactionSource, TransactionValidity},
-	ApplyExtrinsicResult, MultiSignature, Perbill, Permill,
+	ApplyExtrinsicResult, DispatchError, MultiSignature, Perbill, Permill,
 };
-use sp_std::prelude::*;
-
-use example_transition::prelude::*;
-use frame_support::traits::fungible::NativeOrWithId;
+use sp_std::{cmp::Ordering, prelude::*};
 #[cfg(feature = "std")]
 use sp_version::NativeVersion;
 use sp_version::RuntimeVersion;
@@ -80,14 +76,16 @@ pub use crate::types::{
 };
 pub use consts::currency;
 use consts::{currency::*, time::*};
-use pallet_nfts::Call as NftsCall;
 
 use frame_system::pallet_prelude::BlockNumberFor;
 pub use frame_system::Call as SystemCall;
+use pallet_ajuna_affiliates::traits::AffiliateUnlockRules;
+use pallet_ajuna_tournament::EntityRank;
 pub use pallet_balances::Call as BalancesCall;
 use pallet_identity::legacy::IdentityInfo;
+use pallet_sage::AffiliateMethods;
 pub use pallet_timestamp::Call as TimestampCall;
-use sp_runtime::traits::{Convert, IdentifyAccount, IdentityLookup};
+use sp_runtime::traits::{Convert, IdentityLookup};
 
 /// Opaque types. These are used by the CLI to instantiate machinery that don't need to know
 /// the specifics of the runtime. They can then be made to be agnostic over specific formats
@@ -158,8 +156,8 @@ parameter_types! {
 pub struct BaseCallFilter;
 
 impl Contains<RuntimeCall> for BaseCallFilter {
-	fn contains(call: &RuntimeCall) -> bool {
-		!matches!(call, RuntimeCall::Nft(NftsCall::set_attribute { .. }))
+	fn contains(_call: &RuntimeCall) -> bool {
+		true
 	}
 }
 
@@ -217,7 +215,7 @@ impl frame_system::Config for Runtime {
 	type PostTransactions = ();
 }
 
-type SingleBlockMigrations = (pallet_ajuna_awesome_avatars::migration::v6::MigrateToV6<Runtime>,);
+type SingleBlockMigrations = ();
 
 use crate::{fee_handler::HeroJamFeeHandler, mediators::HeroJamAssetMediator};
 #[cfg(not(feature = "runtime-benchmarks"))]
@@ -225,20 +223,7 @@ use mbm::MultiBlockMigrations;
 
 #[cfg(not(feature = "runtime-benchmarks"))]
 mod mbm {
-	use crate::Runtime;
-	use pallet_ajuna_awesome_avatars::migration::v6::mbm::{
-		LazyMigrationAvatarV5ToV6, LazyMigrationPlayerSeasonConfigsV5ToV6,
-		LazyMigrationSeasonStatsV5ToV6, LazyTradeStatsMapCleanup,
-	};
-
-	use pallet_ajuna_awesome_avatars::migration::v6::weights::BajunWeight as AaaMbmWeight;
-
-	pub type MultiBlockMigrations = (
-		LazyMigrationPlayerSeasonConfigsV5ToV6<Runtime, AaaMbmWeight<Runtime>>,
-		LazyMigrationSeasonStatsV5ToV6<Runtime, AaaMbmWeight<Runtime>>,
-		LazyMigrationAvatarV5ToV6<Runtime, AaaMbmWeight<Runtime>>,
-		LazyTradeStatsMapCleanup<Runtime, AaaMbmWeight<Runtime>>,
-	);
+	pub type MultiBlockMigrations = ();
 }
 
 parameter_types! {
@@ -591,21 +576,78 @@ impl pallet_sage::Config<SageHeroJamInstance> for Runtime {
 
 pub type HeroJamSeasonId = u8;
 
+#[cfg(feature = "runtime-benchmarks")]
+pub struct SeasonsHeroJamBenchmarkHelper;
+
+#[cfg(feature = "runtime-benchmarks")]
+impl pallet_ajuna_seasons::BenchmarkHelper<HeroJamSeasonId, MockSeasonData>
+	for SeasonsHeroJamBenchmarkHelper
+{
+	fn create_season_id(id: u32) -> HeroJamSeasonId {
+		id as HeroJamSeasonId
+	}
+
+	fn create_default_season_data() -> MockSeasonData {
+		MockSeasonData {}
+	}
+}
+
+#[derive(Encode, Decode, MaxEncodedLen, TypeInfo, Clone, Debug, PartialEq, Eq)]
+pub struct MockSeasonData;
+
+impl Validate for MockSeasonData {
+	fn validate(&self) -> bool {
+		true
+	}
+}
+
 pub type SeasonsHeroJamInstance = pallet_ajuna_seasons::Instance1;
 impl pallet_ajuna_seasons::Config<SeasonsHeroJamInstance> for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type SeasonId = HeroJamSeasonId;
-	type SeasonData = ();
+	type SeasonData = MockSeasonData;
 	type AssetId = AssetId;
 	type AccountHandler = SageHeroJam;
 	type Currency = Balances;
 	type WeightInfo = ();
 	#[cfg(feature = "runtime-benchmarks")]
-	type BenchmarkHelper = ();
+	type BenchmarkHelper = SeasonsHeroJamBenchmarkHelper;
 }
 
 parameter_types! {
 	pub const AffiliateMaxLevel: u32 = 2;
+}
+
+pub type HeroJamRuleIdentifier = AffiliateMethods<TransitionIdentifier>;
+
+#[cfg(feature = "runtime-benchmarks")]
+pub struct AffiliatesHeroJamBenchmarkHelper;
+
+#[cfg(feature = "runtime-benchmarks")]
+impl pallet_ajuna_affiliates::BenchmarkHelper<HeroJamRuleIdentifier, ()>
+	for AffiliatesHeroJamBenchmarkHelper
+{
+	fn create_rule_id(_id: u32) -> HeroJamRuleIdentifier {
+		AffiliateMethods::StateTransition(TransitionIdentifier::HeroJam(
+			example_transition::transition::hero_jam::HeroAction::Create,
+		))
+	}
+
+	fn create_params(_id: u32) {}
+}
+
+pub struct MockAffiliateUnlockRules;
+
+impl AffiliateUnlockRules for MockAffiliateUnlockRules {
+	type AccountId = AccountId;
+	type UnlockParameters = ();
+
+	fn execute_unlock_rule_for(
+		_account: &Self::AccountId,
+		_params: Self::UnlockParameters,
+	) -> Result<(), DispatchError> {
+		Ok(())
+	}
 }
 
 pub type AffiliatesHeroJamInstance = pallet_ajuna_affiliates::Instance1;
@@ -614,13 +656,13 @@ impl pallet_ajuna_affiliates::Config<AffiliatesHeroJamInstance> for Runtime {
 	type Currency = Balances;
 	type WhitelistKey = ();
 	type AccountManager = SageHeroJam;
-	type RuleIdentifier = pallet_ajuna_awesome_avatars::types::AffiliateMethods;
+	type RuleIdentifier = HeroJamRuleIdentifier;
 	type AffiliateMaxLevel = AffiliateMaxLevel;
 	type UnlockParameters = ();
-	type AffiliatesUnlockRules = ();
+	type AffiliatesUnlockRules = MockAffiliateUnlockRules;
 	type WeightInfo = ();
 	#[cfg(feature = "runtime-benchmarks")]
-	type BenchmarkHelper = ();
+	type BenchmarkHelper = AffiliatesHeroJamBenchmarkHelper;
 }
 
 parameter_types! {
@@ -628,21 +670,86 @@ parameter_types! {
 	pub const MinimumTournamentPhaseDuration: BlockNumber = 100;
 }
 
+pub type HeroJamTournamentCategoryId = u8;
+
+#[derive(Encode, Decode, MaxEncodedLen, TypeInfo, Clone, Debug, PartialEq, Eq)]
+pub struct HeroJamEntityRanker;
+
+impl EntityRank for HeroJamEntityRanker {
+	type EntityId = AssetId;
+	type Entity = HeroJamAsset;
+
+	fn can_rank(&self, _entity: (&Self::EntityId, &Self::Entity)) -> bool {
+		true
+	}
+
+	fn rank_against(
+		&self,
+		_entity: (&Self::EntityId, &Self::Entity),
+		_other: (&Self::EntityId, &Self::Entity),
+	) -> Ordering {
+		Ordering::Equal
+	}
+}
+
+#[cfg(feature = "runtime-benchmarks")]
+pub struct TournamentHeroJamBenchmarkHelper;
+
+#[cfg(feature = "runtime-benchmarks")]
+impl
+	pallet_ajuna_tournament::BenchmarkHelper<
+		HeroJamTournamentCategoryId,
+		BlockNumberFor<Runtime>,
+		Balance,
+		HeroJamEntityRanker,
+		AccountId,
+		AssetId,
+		HeroJamAsset,
+	> for TournamentHeroJamBenchmarkHelper
+{
+	fn create_category_id(id: u32) -> HeroJamTournamentCategoryId {
+		id as HeroJamTournamentCategoryId
+	}
+
+	fn create_default_tournament_config() -> pallet_ajuna_tournament::TournamentConfig<
+		BlockNumberFor<Runtime>,
+		Balance,
+		HeroJamEntityRanker,
+	> {
+		pallet_ajuna_tournament::TournamentConfig {
+			start: 0.saturated_into::<u32>(),
+			active_end: 2.saturated_into::<u32>(),
+			claim_end: 5.saturated_into::<u32>(),
+			initial_reward: None,
+			max_reward: None,
+			take_fee_percentage: None,
+			reward_distribution: Default::default(),
+			golden_duck_config: Default::default(),
+			max_players: 0,
+			ranker: HeroJamEntityRanker {},
+		}
+	}
+
+	fn create_entities(_owner: AccountId, count: u32) -> Vec<(AssetId, HeroJamAsset)> {
+		Vec::with_capacity(count as usize)
+	}
+}
+
 type TournamentHeroJamInstance = pallet_ajuna_tournament::Instance1;
 impl pallet_ajuna_tournament::Config<TournamentHeroJamInstance> for Runtime {
 	type PalletId = TournamentPalletId1;
 	type RuntimeEvent = RuntimeEvent;
 	type Currency = Balances;
-	type TournamentCategoryId = ();
+	type TournamentCategoryId = HeroJamTournamentCategoryId;
 	type EntityId = AssetId;
 	type RankedEntity = HeroJamAsset;
-	type EntityRanker = ();
+	type EntityRanker = HeroJamEntityRanker;
 	type AccountManager = SageHeroJam;
 	type AssetManager = SageHeroJam;
 	type MinimumTournamentPhaseDuration = MinimumTournamentPhaseDuration;
 	type WeightInfo = ();
 	#[cfg(feature = "runtime-benchmarks")]
-	type BenchmarkHelper = ();
+	type BenchmarkHelper = TournamentHeroJamBenchmarkHelper;
 }
 
 pub const fn deposit(items: u32, bytes: u32) -> Balance {
@@ -691,80 +798,10 @@ impl pallet_preimage::Config for Runtime {
 }
 
 parameter_types! {
-	pub const CollectionDeposit: Balance = NANO_AJUNS;
-	pub const ItemDeposit: Balance = NANO_AJUNS;
 	pub const StringLimit: u32 = 128;
-	pub const AttributeDepositBase: Balance = deposit(1, 0);
 	pub const DepositPerByte: Balance = deposit(0, 1);
 	pub const ApprovalsLimit: u32 = 1;
 	pub const ItemAttributesApprovalsLimit: u32 = 10;
-	pub const MaxTips: u32 = 1;
-	pub const MaxDeadlineDuration: u32 = 1;
-	pub const MaxAttributesPerCall: u32 = 10;
-	pub NftFeatures: pallet_nfts::PalletFeatures = pallet_nfts::PalletFeatures::all_enabled();
-}
-
-#[derive(Debug, PartialEq, Eq, Clone, Encode, Decode, MaxEncodedLen, TypeInfo)]
-pub struct ParameterGet<const N: u32>;
-
-impl<const N: u32> Get<u32> for ParameterGet<N> {
-	fn get() -> u32 {
-		N
-	}
-}
-
-pub type KeyLimit = ParameterGet<32>;
-pub type ValueLimit = ParameterGet<64>;
-
-impl pallet_nfts::Config for Runtime {
-	type RuntimeEvent = RuntimeEvent;
-	type CollectionId = CollectionId;
-	type ItemId = ItemId;
-	type Currency = Balances;
-	type ForceOrigin = EnsureRoot<AccountId>;
-	type CreateOrigin = AsEnsureOriginWithArg<EnsureSigned<AccountId>>;
-	type Locker = NftTransfer;
-	type CollectionDeposit = CollectionDeposit;
-	type ItemDeposit = ItemDeposit;
-	type MetadataDepositBase = MetadataDepositBase;
-	type AttributeDepositBase = AttributeDepositBase;
-	type DepositPerByte = DepositPerByte;
-	type StringLimit = StringLimit;
-	type KeyLimit = KeyLimit;
-	type ValueLimit = ValueLimit;
-	type ApprovalsLimit = ApprovalsLimit;
-	type ItemAttributesApprovalsLimit = ItemAttributesApprovalsLimit;
-	type MaxTips = MaxTips;
-	type MaxDeadlineDuration = MaxDeadlineDuration;
-	type MaxAttributesPerCall = MaxAttributesPerCall;
-	type Features = NftFeatures;
-	type OffchainSignature = Signature;
-	type OffchainPublic = AccountPublic;
-	#[cfg(feature = "runtime-benchmarks")]
-	type Helper = NftBenchmarkHelper;
-	type WeightInfo = ();
-}
-
-parameter_types! {
-	pub const NftTransferPalletId: PalletId = PalletId(*b"aj/nfttr");
-}
-
-impl pallet_ajuna_nft_transfer::Config for Runtime {
-	type PalletId = NftTransferPalletId;
-	type RuntimeEvent = RuntimeEvent;
-	type CollectionId = CollectionId;
-	type Item = ();
-	type ItemId = Hash;
-	type ItemConfig = pallet_nfts::ItemConfig;
-	type AssetManager = ();
-	type AccountManager = ();
-	type Fungible = ();
-	type KeyLimit = KeyLimit;
-	type ValueLimit = ValueLimit;
-	type NftHelper = Nft;
-	type WeightInfo = ();
-	#[cfg(feature = "runtime-benchmarks")]
-	type BenchmarkHelper = ();
 }
 
 // Create the runtime by composing the FRAME pallets that were previously configured.
@@ -795,9 +832,6 @@ construct_runtime!(
 		Preimage: pallet_preimage = 19,
 		// Migrations
 		Migrations: pallet_migrations = 20,
-		// SAGE - Nft
-		Nft: pallet_nfts = 30,
-		NftTransfer: pallet_ajuna_nft_transfer = 31,
 		// SAGE - Extra
 		AffiliatesHeroJam: pallet_ajuna_affiliates::<Instance1> = 32,
 		TournamentHeroJam: pallet_ajuna_tournament::<Instance1> = 33,
@@ -851,38 +885,6 @@ mod benches {
 		[frame_benchmarking, BaselineBench::<Runtime>]
 		[frame_system, SystemBench::<Runtime>]
 	);
-}
-
-#[cfg(feature = "runtime-benchmarks")]
-pub struct NftBenchmarkHelper;
-
-#[cfg(feature = "runtime-benchmarks")]
-impl<CollectionId: From<u16>, ItemId: From<[u8; 32]>>
-	pallet_nfts::BenchmarkHelper<CollectionId, ItemId, AccountPublic, AccountId, Signature>
-	for NftBenchmarkHelper
-{
-	fn collection(i: u16) -> CollectionId {
-		i.into()
-	}
-	fn item(i: u16) -> ItemId {
-		let mut id = [0_u8; 32];
-		let bytes = i.to_be_bytes();
-		id[0] = bytes[0];
-		id[1] = bytes[1];
-		id.into()
-	}
-
-	fn signer() -> (sp_runtime::MultiSigner, sp_runtime::AccountId32) {
-		let public = sp_io::crypto::sr25519_generate(0.into(), None);
-		let account = sp_runtime::MultiSigner::Sr25519(public).into_account();
-		(public.into(), account)
-	}
-	fn sign(signer: &sp_runtime::MultiSigner, message: &[u8]) -> sp_runtime::MultiSignature {
-		sp_runtime::MultiSignature::Sr25519(
-			sp_io::crypto::sr25519_sign(0.into(), &signer.clone().try_into().unwrap(), message)
-				.unwrap(),
-		)
-	}
 }
 
 impl_runtime_apis! {
