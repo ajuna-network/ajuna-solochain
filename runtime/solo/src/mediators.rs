@@ -1,4 +1,4 @@
-use crate::{AccountId, HeroJamAsset, Runtime, SageHeroJam, System};
+use crate::{AccountId, HeroJamAsset, HeroJamSage, Runtime, System};
 
 use ajuna_primitives::{
 	asset_manager::{AssetInspector, AssetManager, Lock, LockIdentifier},
@@ -19,7 +19,7 @@ impl AssetManager for HeroJamAssetMediator {
 		owner: &Self::AccountId,
 		asset_id: &Self::AssetId,
 	) -> Result<Self::Asset, DispatchError> {
-		<SageHeroJam as AssetManager>::ensure_ownership(owner, asset_id)
+		<HeroJamSage as AssetManager>::ensure_ownership(owner, asset_id)
 	}
 
 	fn lock_asset(
@@ -27,7 +27,7 @@ impl AssetManager for HeroJamAssetMediator {
 		owner: Self::AccountId,
 		asset_id: Self::AssetId,
 	) -> Result<Self::Asset, DispatchError> {
-		<SageHeroJam as AssetManager>::lock_asset(lock_id, owner, asset_id)
+		<HeroJamSage as AssetManager>::lock_asset(lock_id, owner, asset_id)
 	}
 
 	fn unlock_asset(
@@ -35,11 +35,11 @@ impl AssetManager for HeroJamAssetMediator {
 		owner: Self::AccountId,
 		asset_id: Self::AssetId,
 	) -> Result<Self::Asset, DispatchError> {
-		<SageHeroJam as AssetManager>::unlock_asset(lock_id, owner, asset_id)
+		<HeroJamSage as AssetManager>::unlock_asset(lock_id, owner, asset_id)
 	}
 
 	fn is_locked(asset: &Self::AssetId) -> Option<Lock<Self::AccountId>> {
-		<SageHeroJam as AssetManager>::is_locked(asset)
+		<HeroJamSage as AssetManager>::is_locked(asset)
 	}
 }
 
@@ -49,13 +49,13 @@ impl AssetInspector for HeroJamAssetMediator {
 	type Asset = HeroJamAsset;
 
 	fn get_asset(asset_id: &Self::AssetId) -> Result<Self::Asset, DispatchError> {
-		<SageHeroJam as AssetInspector>::get_asset(asset_id)
+		<HeroJamSage as AssetInspector>::get_asset(asset_id)
 	}
 
 	fn iter_assets_from(
 		account_id: &Self::AccountId,
 	) -> impl Iterator<Item = (Self::AssetId, Self::Asset)> {
-		<SageHeroJam as AssetInspector>::iter_assets_from(account_id)
+		<HeroJamSage as AssetInspector>::iter_assets_from(account_id)
 	}
 }
 

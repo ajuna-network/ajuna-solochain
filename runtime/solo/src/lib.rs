@@ -563,7 +563,7 @@ pub type SageHeroJamInstance = pallet_sage::Instance1;
 impl pallet_sage::Config<SageHeroJamInstance> for Runtime {
 	type PalletId = SageHeroJamId;
 	type SageGameTransition = HeroJamGameTransition;
-	type SeasonHandler = SeasonsHeroJam;
+	type SeasonHandler = HeroJamSeasons;
 	type FeeHandler = HeroJamFeeHandler;
 	type PaymentKind = WithdrawKind<NativeOrWithId<AssetId>>;
 	type FilterHandler = HeroJamAssetFilter;
@@ -607,7 +607,7 @@ impl pallet_ajuna_seasons::Config<SeasonsHeroJamInstance> for Runtime {
 	type SeasonId = HeroJamSeasonId;
 	type SeasonData = MockSeasonData;
 	type AssetId = AssetId;
-	type AccountHandler = SageHeroJam;
+	type AccountHandler = HeroJamSage;
 	type Currency = Balances;
 	type WeightInfo = ();
 	#[cfg(feature = "runtime-benchmarks")]
@@ -655,7 +655,7 @@ impl pallet_ajuna_affiliates::Config<AffiliatesHeroJamInstance> for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type Currency = Balances;
 	type WhitelistKey = ();
-	type AccountManager = SageHeroJam;
+	type AccountManager = HeroJamSage;
 	type RuleIdentifier = HeroJamRuleIdentifier;
 	type AffiliateMaxLevel = AffiliateMaxLevel;
 	type UnlockParameters = ();
@@ -744,8 +744,8 @@ impl pallet_ajuna_tournament::Config<TournamentHeroJamInstance> for Runtime {
 	type EntityId = AssetId;
 	type RankedEntity = HeroJamAsset;
 	type EntityRanker = HeroJamEntityRanker;
-	type AccountManager = SageHeroJam;
-	type AssetManager = SageHeroJam;
+	type AccountManager = HeroJamSage;
+	type AssetManager = HeroJamSage;
 	type MinimumTournamentPhaseDuration = MinimumTournamentPhaseDuration;
 	type WeightInfo = ();
 	#[cfg(feature = "runtime-benchmarks")]
@@ -833,12 +833,12 @@ construct_runtime!(
 		// Migrations
 		Migrations: pallet_migrations = 20,
 		// SAGE - Extra
-		AffiliatesHeroJam: pallet_ajuna_affiliates::<Instance1> = 32,
-		TournamentHeroJam: pallet_ajuna_tournament::<Instance1> = 33,
+		HeroJamAffiliates: pallet_ajuna_affiliates::<Instance1> = 32,
+		HeroJamTournament: pallet_ajuna_tournament::<Instance1> = 33,
 		// SAGE - Seasons
-		SeasonsHeroJam: pallet_ajuna_seasons::<Instance1> = 34,
+		HeroJamSeasons: pallet_ajuna_seasons::<Instance1> = 34,
 		// SAGE
-		SageHeroJam: pallet_sage::<Instance1> = 40,
+		HeroJamSage: pallet_sage::<Instance1> = 40,
 	}
 );
 
