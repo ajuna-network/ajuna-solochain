@@ -592,7 +592,7 @@ impl pallet_ajuna_seasons::BenchmarkHelper<HeroJamSeasonId, MockSeasonData>
 	}
 }
 
-#[derive(Encode, Decode, MaxEncodedLen, TypeInfo, Clone, Debug, PartialEq, Eq)]
+#[derive(Encode, Decode, MaxEncodedLen, TypeInfo, Clone, Debug, PartialEq, Eq, Default)]
 pub struct MockSeasonData;
 
 impl Validate for MockSeasonData {
