@@ -96,7 +96,7 @@ dependencies = [
 [[package]]
 name = "ajuna-payment-handler"
 version = "0.15.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#480397bec9c17be2367d23bbfb158de0da567f72"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#d7f994f654554a7a8daa628ed5b93a0c5e92249f"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -111,7 +111,7 @@ dependencies = [
 [[package]]
 name = "ajuna-primitives"
 version = "0.15.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#480397bec9c17be2367d23bbfb158de0da567f72"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#d7f994f654554a7a8daa628ed5b93a0c5e92249f"
 dependencies = [
  "ajuna-payment-handler",
  "frame-support",
@@ -2097,7 +2097,7 @@ dependencies = [
 [[package]]
 name = "example-transition"
 version = "0.15.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#480397bec9c17be2367d23bbfb158de0da567f72"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#d7f994f654554a7a8daa628ed5b93a0c5e92249f"
 dependencies = [
  "ajuna-primitives",
  "frame-support",
@@ -5330,7 +5330,7 @@ checksum = "b15813163c1d831bf4a13c3610c05c0d03b39feb07f7e09fa234dac9b15aaf39"
 [[package]]
 name = "pallet-ajuna-affiliates"
 version = "0.15.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#480397bec9c17be2367d23bbfb158de0da567f72"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#d7f994f654554a7a8daa628ed5b93a0c5e92249f"
 dependencies = [
  "ajuna-primitives",
  "frame-benchmarking",
@@ -5347,7 +5347,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-awesome-avatars"
 version = "0.15.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#480397bec9c17be2367d23bbfb158de0da567f72"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#d7f994f654554a7a8daa628ed5b93a0c5e92249f"
 dependencies = [
  "ajuna-primitives",
  "frame-benchmarking",
@@ -5368,7 +5368,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-battle-mogs"
 version = "0.15.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#480397bec9c17be2367d23bbfb158de0da567f72"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#d7f994f654554a7a8daa628ed5b93a0c5e92249f"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -5383,7 +5383,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-nft-staking"
 version = "0.15.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#480397bec9c17be2367d23bbfb158de0da567f72"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#d7f994f654554a7a8daa628ed5b93a0c5e92249f"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -5398,7 +5398,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-nft-transfer"
 version = "0.15.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#480397bec9c17be2367d23bbfb158de0da567f72"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#d7f994f654554a7a8daa628ed5b93a0c5e92249f"
 dependencies = [
  "ajuna-primitives",
  "frame-benchmarking",
@@ -5416,7 +5416,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-seasons"
 version = "0.15.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#480397bec9c17be2367d23bbfb158de0da567f72"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#d7f994f654554a7a8daa628ed5b93a0c5e92249f"
 dependencies = [
  "ajuna-primitives",
  "frame-benchmarking",
@@ -5434,7 +5434,7 @@ dependencies = [
 [[package]]
 name = "pallet-ajuna-tournament"
 version = "0.15.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#480397bec9c17be2367d23bbfb158de0da567f72"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#d7f994f654554a7a8daa628ed5b93a0c5e92249f"
 dependencies = [
  "ajuna-primitives",
  "frame-benchmarking",
@@ -5690,7 +5690,7 @@ dependencies = [
 [[package]]
 name = "pallet-sage"
 version = "0.15.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#480397bec9c17be2367d23bbfb158de0da567f72"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#d7f994f654554a7a8daa628ed5b93a0c5e92249f"
 dependencies = [
  "ajuna-primitives",
  "example-transition",
@@ -7234,7 +7234,7 @@ dependencies = [
 [[package]]
 name = "sage-api"
 version = "0.15.0"
-source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#480397bec9c17be2367d23bbfb158de0da567f72"
+source = "git+https://github.com/ajuna-network/ajuna-pallets.git?branch=ds%2Fintegrate-solonode#d7f994f654554a7a8daa628ed5b93a0c5e92249f"
 dependencies = [
  "ajuna-primitives",
  "frame-support",

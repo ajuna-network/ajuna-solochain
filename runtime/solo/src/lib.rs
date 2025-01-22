@@ -24,7 +24,6 @@ include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
 use crate::gov::EnsureRootOrMoreThanHalfCouncil;
 use ajuna_payment_handler::WithdrawKind;
-use ajuna_primitives::season_manager::Validate;
 use example_transition::prelude::*;
 use frame_support::{
 	construct_runtime,
@@ -46,8 +45,7 @@ use frame_support::{
 use frame_system::{EnsureRoot, EnsureSigned};
 use pallet_grandpa::AuthorityId as GrandpaId;
 use pallet_transaction_payment::FungibleAdapter;
-use parity_scale_codec::{Decode, Encode, MaxEncodedLen};
-use scale_info::TypeInfo;
+use parity_scale_codec::Encode;
 use sp_api::impl_runtime_apis;
 use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_core::{crypto::KeyTypeId, OpaqueMetadata};
@@ -59,7 +57,7 @@ use sp_runtime::{
 	transaction_validity::{TransactionSource, TransactionValidity},
 	ApplyExtrinsicResult, DispatchError, MultiSignature, Perbill, Permill,
 };
-use sp_std::{cmp::Ordering, prelude::*};
+use sp_std::prelude::*;
 #[cfg(feature = "std")]
 use sp_version::NativeVersion;
 use sp_version::RuntimeVersion;
@@ -80,7 +78,6 @@ use consts::{currency::*, time::*};
 use frame_system::pallet_prelude::BlockNumberFor;
 pub use frame_system::Call as SystemCall;
 use pallet_ajuna_affiliates::traits::AffiliateUnlockRules;
-use pallet_ajuna_tournament::EntityRank;
 pub use pallet_balances::Call as BalancesCall;
 use pallet_identity::legacy::IdentityInfo;
 use pallet_sage::AffiliateMethods;
@@ -574,44 +571,17 @@ impl pallet_sage::Config<SageHeroJamInstance> for Runtime {
 	type BenchmarkHelper = HeroJamBenchmarkHelper;
 }
 
-pub type HeroJamSeasonId = u8;
-
-#[cfg(feature = "runtime-benchmarks")]
-pub struct SeasonsHeroJamBenchmarkHelper;
-
-#[cfg(feature = "runtime-benchmarks")]
-impl pallet_ajuna_seasons::BenchmarkHelper<HeroJamSeasonId, MockSeasonData>
-	for SeasonsHeroJamBenchmarkHelper
-{
-	fn create_season_id(id: u32) -> HeroJamSeasonId {
-		id as HeroJamSeasonId
-	}
-
-	fn create_default_season_data() -> MockSeasonData {
-		MockSeasonData {}
-	}
-}
-
-#[derive(Encode, Decode, MaxEncodedLen, TypeInfo, Clone, Debug, PartialEq, Eq, Default)]
-pub struct MockSeasonData;
-
-impl Validate for MockSeasonData {
-	fn validate(&self) -> bool {
-		true
-	}
-}
-
 pub type SeasonsHeroJamInstance = pallet_ajuna_seasons::Instance1;
 impl pallet_ajuna_seasons::Config<SeasonsHeroJamInstance> for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type SeasonId = HeroJamSeasonId;
-	type SeasonData = MockSeasonData;
+	type SeasonData = HeroJamSeasonData;
 	type AssetId = AssetId;
 	type AccountHandler = HeroJamSage;
 	type Currency = Balances;
 	type WeightInfo = ();
 	#[cfg(feature = "runtime-benchmarks")]
-	type BenchmarkHelper = SeasonsHeroJamBenchmarkHelper;
+	type BenchmarkHelper = GameSeasonsBenchmarkHelper;
 }
 
 parameter_types! {
@@ -670,71 +640,6 @@ parameter_types! {
 	pub const MinimumTournamentPhaseDuration: BlockNumber = 100;
 }
 
-pub type HeroJamTournamentCategoryId = u8;
-
-#[derive(Encode, Decode, MaxEncodedLen, TypeInfo, Clone, Debug, PartialEq, Eq)]
-pub struct HeroJamEntityRanker;
-
-impl EntityRank for HeroJamEntityRanker {
-	type EntityId = AssetId;
-	type Entity = HeroJamAsset;
-
-	fn can_rank(&self, _entity: (&Self::EntityId, &Self::Entity)) -> bool {
-		true
-	}
-
-	fn rank_against(
-		&self,
-		_entity: (&Self::EntityId, &Self::Entity),
-		_other: (&Self::EntityId, &Self::Entity),
-	) -> Ordering {
-		Ordering::Equal
-	}
-}
-
-#[cfg(feature = "runtime-benchmarks")]
-pub struct TournamentHeroJamBenchmarkHelper;
-
-#[cfg(feature = "runtime-benchmarks")]
-impl
-	pallet_ajuna_tournament::BenchmarkHelper<
-		HeroJamTournamentCategoryId,
-		BlockNumberFor<Runtime>,
-		Balance,
-		HeroJamEntityRanker,
-		AccountId,
-		AssetId,
-		HeroJamAsset,
-	> for TournamentHeroJamBenchmarkHelper
-{
-	fn create_category_id(id: u32) -> HeroJamTournamentCategoryId {
-		id as HeroJamTournamentCategoryId
-	}
-
-	fn create_default_tournament_config() -> pallet_ajuna_tournament::TournamentConfig<
-		BlockNumberFor<Runtime>,
-		Balance,
-		HeroJamEntityRanker,
-	> {
-		pallet_ajuna_tournament::TournamentConfig {
-			start: 0.saturated_into::<u32>(),
-			active_end: 2.saturated_into::<u32>(),
-			claim_end: 5.saturated_into::<u32>(),
-			initial_reward: None,
-			max_reward: None,
-			take_fee_percentage: None,
-			reward_distribution: Default::default(),
-			golden_duck_config: Default::default(),
-			max_players: 0,
-			ranker: HeroJamEntityRanker {},
-		}
-	}
-
-	fn create_entities(_owner: AccountId, count: u32) -> Vec<(AssetId, HeroJamAsset)> {
-		Vec::with_capacity(count as usize)
-	}
-}
-
 type TournamentHeroJamInstance = pallet_ajuna_tournament::Instance1;
 impl pallet_ajuna_tournament::Config<TournamentHeroJamInstance> for Runtime {
 	type PalletId = TournamentPalletId1;
@@ -743,13 +648,14 @@ impl pallet_ajuna_tournament::Config<TournamentHeroJamInstance> for Runtime {
 	type TournamentCategoryId = HeroJamTournamentCategoryId;
 	type EntityId = AssetId;
 	type RankedEntity = HeroJamAsset;
-	type EntityRanker = HeroJamEntityRanker;
+	type EntityRanker = HeroJamEntityRanker<BlockNumberFor<Runtime>>;
 	type AccountManager = HeroJamSage;
 	type AssetManager = HeroJamSage;
 	type MinimumTournamentPhaseDuration = MinimumTournamentPhaseDuration;
 	type WeightInfo = ();
 	#[cfg(feature = "runtime-benchmarks")]
-	type BenchmarkHelper = TournamentHeroJamBenchmarkHelper;
+	type BenchmarkHelper =
+		GameTournamentBenchmarkHelper<AccountId, BlockNumberFor<Runtime>, HeroJamSage>;
 }
 
 pub const fn deposit(items: u32, bytes: u32) -> Balance {
