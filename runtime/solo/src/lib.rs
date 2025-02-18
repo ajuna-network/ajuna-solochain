@@ -23,13 +23,19 @@
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
 use crate::gov::EnsureRootOrMoreThanHalfCouncil;
-use ajuna_payment_handler::WithdrawKind;
+
+use ajuna_payment_handler::{
+	TransferFungibleAssets, WithdrawCreditOrVoucher, WithdrawFungibles, WithdrawKind,
+};
+use ajuna_primitives::{asset_manager::*, sage_api::SageApi, season_manager::*};
 use example_transition::prelude::*;
+use pallet_sage::*;
+
 use frame_support::{
 	construct_runtime,
 	genesis_builder_helper::{build_state, get_preset},
 	migrations::{FailedMigrationHandler, FailedMigrationHandling, MigrationStatusHandler},
-	pallet_prelude::ConstU32,
+	pallet_prelude::{ConstU32, Decode, MaxEncodedLen, TypeInfo},
 	parameter_types,
 	traits::{
 		fungible::{HoldConsideration, NativeOrWithId},
@@ -48,7 +54,7 @@ use pallet_transaction_payment::FungibleAdapter;
 use parity_scale_codec::Encode;
 use sp_api::impl_runtime_apis;
 use sp_consensus_aura::sr25519::AuthorityId as AuraId;
-use sp_core::{crypto::KeyTypeId, OpaqueMetadata};
+use sp_core::{crypto::KeyTypeId, OpaqueMetadata, H256};
 use sp_runtime::{
 	create_runtime_str, generic, impl_opaque_keys,
 	traits::{
@@ -57,7 +63,7 @@ use sp_runtime::{
 	transaction_validity::{TransactionSource, TransactionValidity},
 	ApplyExtrinsicResult, DispatchError, MultiSignature, Perbill, Permill,
 };
-use sp_std::prelude::*;
+use sp_std::{cmp::Ordering, prelude::*};
 #[cfg(feature = "std")]
 use sp_version::NativeVersion;
 use sp_version::RuntimeVersion;
@@ -65,7 +71,6 @@ use sp_version::RuntimeVersion;
 mod consts;
 mod fee_handler;
 mod gov;
-mod mediators;
 mod types;
 
 pub use crate::types::{
@@ -78,6 +83,7 @@ use consts::{currency::*, time::*};
 use frame_system::pallet_prelude::BlockNumberFor;
 pub use frame_system::Call as SystemCall;
 use pallet_ajuna_affiliates::traits::AffiliateUnlockRules;
+use pallet_ajuna_tournament::EntityRank;
 pub use pallet_balances::Call as BalancesCall;
 use pallet_identity::legacy::IdentityInfo;
 use pallet_sage::AffiliateMethods;
@@ -214,7 +220,7 @@ impl frame_system::Config for Runtime {
 
 type SingleBlockMigrations = ();
 
-use crate::{fee_handler::HeroJamFeeHandler, mediators::HeroJamAssetMediator};
+use crate::fee_handler::{CasinoJamFeeHandler, DummyVoucherHandler, NativeAndAssets};
 #[cfg(not(feature = "runtime-benchmarks"))]
 use mbm::MultiBlockMigrations;
 
@@ -545,50 +551,102 @@ impl pallet_proxy::Config for Runtime {
 	type AnnouncementDepositFactor = AnnouncementDepositFactor;
 }
 
+impl pallet_insecure_randomness_collective_flip::Config for Runtime {}
+
+pub struct SageEngine;
+
+/// Runtime specific sage implementation so that we don't have to
+/// pass our type definitions all the time.
+macro_rules! impl_runtime_sage_api {
+	(
+		$impl_target:ident,
+		$runtime:ident,
+		$sage_instance:ident,
+		$season_manager:ident,
+		$asset_id:ident,
+		$asset:ident,
+		$transition_config:ident,
+	) => {
+		impl_sage_api!(
+			$impl_target,
+			$runtime,
+			$sage_instance,
+			$season_manager,
+			CasinoJamRandom,
+			AccountId,
+			$asset_id,
+			$asset,
+			FungiblesAssetId,
+			Balance,
+			BlockNumber,
+			CasinoJamSeasonId,
+			$transition_config,
+			H256,
+		);
+	};
+}
+
+// Every new game we add can simply call that macro for another sage instance to
+// implement the sage api given that the other types are identical.
+impl_runtime_sage_api!(
+	SageEngine,
+	Runtime,
+	CasinoJamSageInstance,
+	CasinoJamSeasons,
+	AssetId,
+	CasinoJamAsset,
+	CasinoJamTransitionConfig,
+);
+
 parameter_types! {
 	pub const SageHeroJamId: PalletId = PalletId(*b"sage/hjm");
 }
 
-pub type HeroJamAsset = Asset<BlockNumberFor<Runtime>>;
-pub type HeroJamGameTransition =
-	GameTransition<AccountId, BlockNumberFor<Runtime>, HeroJamAssetMediator, HeroJamAssetMediator>;
+pub type CasinoJamAsset = Asset<BlockNumberFor<Runtime>>;
+pub type GameTransition = CasinoJamTransition<AccountId, BlockNumberFor<Runtime>, SageEngine>;
 
-pub type HeroJamAssetFilter = GameFilter<BlockNumberFor<Runtime>>;
-pub type HeroJamBenchmarkHelper = GameBenchmarkHelper<BlockNumberFor<Runtime>>;
+pub type CasinoJamAssetFilter = GameFilter<BlockNumberFor<Runtime>>;
+pub type CasinoJamBenchmarkHelper = GameBenchmarkHelper<BlockNumberFor<Runtime>>;
 
-pub type SageHeroJamInstance = pallet_sage::Instance1;
-impl pallet_sage::Config<SageHeroJamInstance> for Runtime {
+type FungiblesAssetId = WithdrawKind<NativeOrWithId<AssetId>>;
+type TransferWithdraw =
+	WithdrawCreditOrVoucher<WithdrawFungibles<AccountId, NativeAndAssets>, DummyVoucherHandler>;
+
+pub type CasinoJamSageInstance = pallet_sage::Instance1;
+impl pallet_sage::Config<CasinoJamSageInstance> for Runtime {
 	type PalletId = SageHeroJamId;
-	type SageGameTransition = HeroJamGameTransition;
-	type SeasonHandler = HeroJamSeasons;
-	type FeeHandler = HeroJamFeeHandler;
-	type PaymentKind = WithdrawKind<NativeOrWithId<AssetId>>;
-	type FilterHandler = HeroJamAssetFilter;
-	type Currency = Balances;
+	type SageGameTransition = GameTransition;
+	type SeasonHandler = CasinoJamSeasons;
+	type FeeHandler = CasinoJamFeeHandler;
+	type TransferFunds = TransferFungibleAssets<TransferWithdraw, FungiblesAssetId>;
+	type FungiblesAssetId = FungiblesAssetId;
+	type FilterHandler = CasinoJamAssetFilter;
+	type Fungible = Balances;
 	type RuntimeEvent = RuntimeEvent;
 	type WeightInfo = ();
 	#[cfg(feature = "runtime-benchmarks")]
-	type BenchmarkHelper = HeroJamBenchmarkHelper;
+	type BenchmarkHelper = CasinoJamBenchmarkHelper;
 }
+
+pub type CasinoJamSeasonId = u32;
 
 pub type SeasonsHeroJamInstance = pallet_ajuna_seasons::Instance1;
 impl pallet_ajuna_seasons::Config<SeasonsHeroJamInstance> for Runtime {
 	type RuntimeEvent = RuntimeEvent;
-	type SeasonId = HeroJamSeasonId;
-	type SeasonData = HeroJamSeasonData;
+	type SeasonId = CasinoJamSeasonId;
 	type AssetId = AssetId;
-	type AccountHandler = HeroJamSage;
+	type AccountHandler = CasinoJamSage;
 	type Currency = Balances;
 	type WeightInfo = ();
 	#[cfg(feature = "runtime-benchmarks")]
-	type BenchmarkHelper = GameSeasonsBenchmarkHelper;
+	type BenchmarkHelper = ();
 }
 
 parameter_types! {
 	pub const AffiliateMaxLevel: u32 = 2;
 }
 
-pub type HeroJamRuleIdentifier = AffiliateMethods<TransitionIdentifier>;
+pub type HeroJamRuleIdentifier = AffiliateMethods<CasinoAction>;
 
 #[cfg(feature = "runtime-benchmarks")]
 pub struct AffiliatesHeroJamBenchmarkHelper;
@@ -598,9 +656,7 @@ impl pallet_ajuna_affiliates::BenchmarkHelper<HeroJamRuleIdentifier, ()>
 	for AffiliatesHeroJamBenchmarkHelper
 {
 	fn create_rule_id(_id: u32) -> HeroJamRuleIdentifier {
-		AffiliateMethods::StateTransition(TransitionIdentifier::HeroJam(
-			example_transition::transition::hero_jam::HeroAction::Create,
-		))
+		AffiliateMethods::StateTransition(CasinoAction::Create(AssetType::Player))
 	}
 
 	fn create_params(_id: u32) {}
@@ -625,7 +681,7 @@ impl pallet_ajuna_affiliates::Config<AffiliatesHeroJamInstance> for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 	type Currency = Balances;
 	type WhitelistKey = ();
-	type AccountManager = HeroJamSage;
+	type AccountManager = CasinoJamSage;
 	type RuleIdentifier = HeroJamRuleIdentifier;
 	type AffiliateMaxLevel = AffiliateMaxLevel;
 	type UnlockParameters = ();
@@ -640,22 +696,86 @@ parameter_types! {
 	pub const MinimumTournamentPhaseDuration: BlockNumber = 100;
 }
 
+pub type CasinoTournamentCategoryId = u32;
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Encode, Decode, MaxEncodedLen, TypeInfo)]
+pub struct CasinoJamEntityRanker;
+
+impl EntityRank for CasinoJamEntityRanker {
+	type EntityId = AssetId;
+	type Entity = CasinoJamAsset;
+
+	fn can_rank(&self, _: (&Self::EntityId, &Self::Entity)) -> bool {
+		true
+	}
+
+	fn rank_against(
+		&self,
+		_: (&Self::EntityId, &Self::Entity),
+		_: (&Self::EntityId, &Self::Entity),
+	) -> Ordering {
+		Ordering::Equal
+	}
+}
+
+#[cfg(feature = "runtime-benchmarks")]
+pub struct MockTournamentBenchmarkHelper;
+
+#[cfg(feature = "runtime-benchmarks")]
+impl
+	pallet_ajuna_tournament::BenchmarkHelper<
+		CasinoTournamentCategoryId,
+		BlockNumberFor<Runtime>,
+		Balance,
+		CasinoJamEntityRanker,
+		AccountId,
+		AssetId,
+		CasinoJamAsset,
+	> for MockTournamentBenchmarkHelper
+{
+	fn create_category_id(id: u32) -> CasinoTournamentCategoryId {
+		id
+	}
+
+	fn create_default_tournament_config() -> pallet_ajuna_tournament::TournamentConfig<
+		BlockNumberFor<Runtime>,
+		Balance,
+		CasinoJamEntityRanker,
+	> {
+		pallet_ajuna_tournament::TournamentConfig {
+			start: 0_u32.into(),
+			active_end: 100_u32.into(),
+			claim_end: 200_u32.into(),
+			initial_reward: None,
+			max_reward: None,
+			take_fee_percentage: None,
+			reward_distribution: Default::default(),
+			golden_duck_config: Default::default(),
+			max_players: 0,
+			ranker: CasinoJamEntityRanker,
+		}
+	}
+
+	fn create_entities(_: AccountId, _: u32) -> Vec<(AssetId, CasinoJamAsset)> {
+		vec![]
+	}
+}
+
 type TournamentHeroJamInstance = pallet_ajuna_tournament::Instance1;
 impl pallet_ajuna_tournament::Config<TournamentHeroJamInstance> for Runtime {
 	type PalletId = TournamentPalletId1;
 	type RuntimeEvent = RuntimeEvent;
 	type Currency = Balances;
-	type TournamentCategoryId = HeroJamTournamentCategoryId;
+	type TournamentCategoryId = CasinoTournamentCategoryId;
 	type EntityId = AssetId;
-	type RankedEntity = HeroJamAsset;
-	type EntityRanker = HeroJamEntityRanker<BlockNumberFor<Runtime>>;
-	type AccountManager = HeroJamSage;
-	type AssetManager = HeroJamSage;
+	type RankedEntity = CasinoJamAsset;
+	type EntityRanker = CasinoJamEntityRanker;
+	type AccountManager = CasinoJamSage;
+	type AssetManager = CasinoJamSage;
 	type MinimumTournamentPhaseDuration = MinimumTournamentPhaseDuration;
 	type WeightInfo = ();
 	#[cfg(feature = "runtime-benchmarks")]
-	type BenchmarkHelper =
-		GameTournamentBenchmarkHelper<AccountId, BlockNumberFor<Runtime>, HeroJamSage>;
+	type BenchmarkHelper = MockTournamentBenchmarkHelper;
 }
 
 pub const fn deposit(items: u32, bytes: u32) -> Balance {
@@ -739,12 +859,13 @@ construct_runtime!(
 		// Migrations
 		Migrations: pallet_migrations = 20,
 		// SAGE - Extra
-		HeroJamAffiliates: pallet_ajuna_affiliates::<Instance1> = 32,
-		HeroJamTournament: pallet_ajuna_tournament::<Instance1> = 33,
+		CasinoJamAffiliates: pallet_ajuna_affiliates::<Instance1> = 32,
+		CasinoJamTournament: pallet_ajuna_tournament::<Instance1> = 33,
 		// SAGE - Seasons
-		HeroJamSeasons: pallet_ajuna_seasons::<Instance1> = 34,
+		CasinoJamSeasons: pallet_ajuna_seasons::<Instance1> = 34,
 		// SAGE
-		HeroJamSage: pallet_sage::<Instance1> = 40,
+		CasinoJamSage: pallet_sage::<Instance1> = 40,
+		CasinoJamRandom: pallet_insecure_randomness_collective_flip = 41
 	}
 );
 

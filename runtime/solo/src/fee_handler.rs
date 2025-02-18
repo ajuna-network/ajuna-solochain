@@ -1,6 +1,6 @@
 use crate::{
-	AccountId, AffiliateMaxLevel, AssetId, Assets, Balance, Balances, HeroJamAffiliates,
-	HeroJamTournament,
+	AccountId, AffiliateMaxLevel, AssetId, Assets, Balance, Balances, CasinoJamAffiliates,
+	CasinoJamTournament,
 };
 use ajuna_payment_handler::{
 	AllowAllAssets, AssetGameFeeHandler, VoucherHandler, WithdrawCreditOrVoucher,
@@ -17,7 +17,8 @@ pub type NativeAndAssets = UnionOf<
 	AccountId,
 >;
 
-pub type HeroJamFeeHandler = AssetGameFeeHandler<
+/// Fee handler facilitating payment in the native currency and with whitelisted assets.
+pub type AjunaAssetFeeHandler<Affiliates, AffiliateMaxLevel, Tournament> = AssetGameFeeHandler<
 	AccountId,
 	NativeAndAssets,
 	WithdrawCreditOrVoucher<
@@ -27,10 +28,13 @@ pub type HeroJamFeeHandler = AssetGameFeeHandler<
 		>,
 		DummyVoucherHandler,
 	>,
-	HeroJamAffiliates,
+	Affiliates,
 	AffiliateMaxLevel,
-	HeroJamTournament,
+	Tournament,
 >;
+
+pub type CasinoJamFeeHandler =
+	AjunaAssetFeeHandler<CasinoJamAffiliates, AffiliateMaxLevel, CasinoJamTournament>;
 
 pub struct DummyVoucherHandler;
 

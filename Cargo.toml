@@ -6,7 +6,7 @@ repository = "https://github.com/ajuna-network/Ajuna"
 version    = "0.1.0"
 
 [workspace.metadata.psvm]
-version = "polkadot-stable2409"
+version = "polkadot-stable2409-3"
 
 [workspace]
 resolver = "2"
@@ -39,7 +39,7 @@ frame-benchmarking                         = { version = "38.0.0", default-featu
 frame-benchmarking-cli                     = { version = "43.0.0" }
 frame-executive                            = { version = "38.0.0", default-features = false }
 frame-metadata-hash-extension              = { version = "0.6.0", default-features = false }
-frame-support                              = { version = "38.0.0", default-features = false }
+frame-support                              = { version = "38.2.0", default-features = false }
 frame-system                               = { version = "38.0.0", default-features = false }
 frame-system-benchmarking                  = { version = "38.0.0", default-features = false }
 frame-system-rpc-runtime-api               = { version = "34.0.0", default-features = false }
@@ -53,7 +53,7 @@ pallet-democracy                           = { version = "38.0.0", default-featu
 pallet-grandpa                             = { version = "38.0.0", default-features = false }
 pallet-identity                            = { version = "38.0.0", default-features = false }
 pallet-insecure-randomness-collective-flip = { version = "26.0.0", default-features = false }
-pallet-message-queue                       = { version = "41.0.0", default-features = false }
+pallet-message-queue                       = { version = "41.0.2", default-features = false }
 pallet-migrations                          = { version = "8.0.0", default-features = false }
 pallet-multisig                            = { version = "38.0.0", default-features = false }
 pallet-nfts                                = { version = "32.0.0", default-features = false }
@@ -63,7 +63,7 @@ pallet-scheduler                           = { version = "39.0.0", default-featu
 pallet-session                             = { version = "38.0.0", default-features = false }
 pallet-sudo                                = { version = "38.0.0", default-features = false }
 pallet-timestamp                           = { version = "37.0.0", default-features = false }
-pallet-transaction-payment                 = { version = "38.0.0", default-features = false }
+pallet-transaction-payment                 = { version = "38.0.2", default-features = false }
 pallet-transaction-payment-rpc             = { version = "41.0.0" }
 pallet-transaction-payment-rpc-runtime-api = { version = "38.0.0", default-features = false }
 pallet-treasury                            = { version = "37.0.0", default-features = false }
@@ -77,8 +77,8 @@ sc-consensus-aura                          = { version = "0.45.0" }
 sc-consensus-grandpa                       = { version = "0.30.0" }
 sc-executor                                = { version = "0.40.1", default-features = false }
 sc-keystore                                = { version = "33.0.0", default-features = false }
-sc-network                                 = { version = "0.45.0" }
-sc-network-sync                            = { version = "0.44.0" }
+sc-network                                 = { version = "0.45.3" }
+sc-network-sync                            = { version = "0.44.1" }
 sc-offchain                                = { version = "40.0.0" }
 sc-rpc                                     = { version = "40.0.0" }
 sc-rpc-api                                 = { version = "0.44.0" }
@@ -101,7 +101,7 @@ sp-keyring                                 = { version = "39.0.0" }
 sp-keystore                                = { version = "0.40.0", default-features = false }
 sp-offchain                                = { version = "34.0.0", default-features = false }
 sp-io                                      = { version = "38.0.0", default-features = false }
-sp-runtime                                 = { version = "39.0.1", default-features = false }
+sp-runtime                                 = { version = "39.0.5", default-features = false }
 sp-session                                 = { version = "36.0.0", default-features = false }
 sp-std                                     = { version = "14.0.0", default-features = false }
 sp-storage                                 = { version = "21.0.0", default-features = false }
@@ -114,9 +114,9 @@ substrate-prometheus-endpoint              = { version = "0.17.0" }
 substrate-wasm-builder                     = { version = "24.0.1" }
 
 # Polkadot
-pallet-xcm                    = { version = "17.0.0", default-features = false }
-polkadot-cli                  = { version = "18.0.0", default-features = false }
-polkadot-service              = { version = "18.0.0", default-features = false }
+pallet-xcm                    = { version = "17.0.1", default-features = false }
+polkadot-cli                  = { version = "19.0.0", default-features = false }
+polkadot-service              = { version = "19.0.0", default-features = false }
 polkadot-parachain-primitives = { version = "14.0.0", default-features = false }
 polkadot-primitives           = { version = "16.0.0", default-features = false }
 polkadot-runtime-common       = { version = "17.0.0", default-features = false }
@@ -128,22 +128,22 @@ orml-vesting = { version = "1.2.1", default-features = false }
 ajuna-solo-runtime = { path = "runtime/solo" }
 
 # Ajuna Primitives
-ajuna-payment-handler                     = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/integrate-solonode", default-features = false }
-ajuna-primitives                          = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/integrate-solonode", default-features = false }
+ajuna-payment-handler                     = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
+ajuna-primitives                          = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
 
 # Ajuna Pallets
-pallet-ajuna-awesome-avatars              = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/integrate-solonode", default-features = false }
-pallet-ajuna-affiliates                   = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/integrate-solonode", default-features = false }
-pallet-ajuna-battle-mogs                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/integrate-solonode", default-features = false }
-pallet-ajuna-nft-transfer                 = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/integrate-solonode", default-features = false }
-pallet-ajuna-nft-staking                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/integrate-solonode", default-features = false }
-pallet-ajuna-seasons                      = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/integrate-solonode", default-features = false }
-pallet-ajuna-tournament                   = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/integrate-solonode", default-features = false }
+pallet-ajuna-awesome-avatars              = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
+pallet-ajuna-affiliates                   = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
+pallet-ajuna-battle-mogs                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
+pallet-ajuna-nft-transfer                 = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
+pallet-ajuna-nft-staking                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
+pallet-ajuna-seasons                      = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
+pallet-ajuna-tournament                   = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
 
 # SAGE
-example-transition                        = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/integrate-solonode", default-features = false }
-pallet-sage                               = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/integrate-solonode", default-features = false }
-sage-api                                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/integrate-solonode", default-features = false }
+example-transition                        = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
+pallet-sage                               = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
+sage-api                                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
 
 [profile.production]
 codegen-units = 1
