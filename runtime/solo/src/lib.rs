@@ -743,9 +743,9 @@ impl
 		CasinoJamEntityRanker,
 	> {
 		pallet_ajuna_tournament::TournamentConfig {
-			start: 0_u32.into(),
-			active_end: 100_u32.into(),
-			claim_end: 200_u32.into(),
+			start: 0_u32,
+			active_end: 100_u32,
+			claim_end: 200_u32,
 			initial_reward: None,
 			max_reward: None,
 			take_fee_percentage: None,
