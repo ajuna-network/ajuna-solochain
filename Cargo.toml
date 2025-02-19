@@ -128,22 +128,22 @@ orml-vesting = { version = "1.2.1", default-features = false }
 ajuna-solo-runtime = { path = "runtime/solo" }
 
 # Ajuna Primitives
-ajuna-payment-handler                     = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
-ajuna-primitives                          = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
+ajuna-payment-handler                     = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "develop", default-features = false }
+ajuna-primitives                          = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "develop", default-features = false }
 
 # Ajuna Pallets
-pallet-ajuna-awesome-avatars              = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
-pallet-ajuna-affiliates                   = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
-pallet-ajuna-battle-mogs                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
-pallet-ajuna-nft-transfer                 = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
-pallet-ajuna-nft-staking                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
-pallet-ajuna-seasons                      = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
-pallet-ajuna-tournament                   = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
+pallet-ajuna-awesome-avatars              = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "develop", default-features = false }
+pallet-ajuna-affiliates                   = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "develop", default-features = false }
+pallet-ajuna-battle-mogs                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "develop", default-features = false }
+pallet-ajuna-nft-transfer                 = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "develop", default-features = false }
+pallet-ajuna-nft-staking                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "develop", default-features = false }
+pallet-ajuna-seasons                      = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "develop", default-features = false }
+pallet-ajuna-tournament                   = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "develop", default-features = false }
 
 # SAGE
-example-transition                        = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
-pallet-sage                               = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
-sage-api                                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "ds/AJUN-1014", default-features = false }
+example-transition                        = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "develop", default-features = false }
+pallet-sage                               = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "develop", default-features = false }
+sage-api                                  = { git = "https://github.com/ajuna-network/ajuna-pallets.git", branch = "develop", default-features = false }
 
 [profile.production]
 codegen-units = 1
