@@ -1,7 +1,4 @@
-use crate::{
-	AccountId, AffiliateMaxLevel, AssetId, Assets, Balance, Balances, CasinoJamAffiliates,
-	CasinoJamTournament,
-};
+use crate::{AccountId, AffiliateMaxLevel, AssetId, Assets, Balance, Balances};
 use ajuna_payment_handler::{
 	AllowAllAssets, AssetGameFeeHandler, VoucherHandler, WithdrawCreditOrVoucher,
 	WithdrawFungibles, WithdrawWhitelistedCredit,
@@ -32,20 +29,3 @@ pub type AjunaAssetFeeHandler<Affiliates, AffiliateMaxLevel, Tournament> = Asset
 	AffiliateMaxLevel,
 	Tournament,
 >;
-
-pub type CasinoJamFeeHandler =
-	AjunaAssetFeeHandler<CasinoJamAffiliates, AffiliateMaxLevel, CasinoJamTournament>;
-
-pub struct DummyVoucherHandler;
-
-impl VoucherHandler for DummyVoucherHandler {
-	type AccountId = AccountId;
-	type Balance = Balance;
-
-	fn consume_vouchers_from(
-		_account: &Self::AccountId,
-		_amount: Self::Balance,
-	) -> Result<(), DispatchError> {
-		Ok(())
-	}
-}
