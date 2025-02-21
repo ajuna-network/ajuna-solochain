@@ -13,11 +13,32 @@
 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+use super::*;
+use crate::{
+	fee_handler::{AjunaAssetFeeHandler, NativeAndAssets},
+	Balances, BlockNumber, CasinoJamAffiliates, CasinoJamRandom, CasinoJamSage, CasinoJamSeasons,
+	CasinoJamTournament, Runtime, RuntimeEvent,
+};
 
 use example_transition::prelude::*;
 
-pub type CasinoJamFeeHandler =
-	AjunaAssetFeeHandler<CasinoJamAffiliates, AffiliateMaxLevel, CasinoJamTournament>;
+use frame_support::{
+	pallet_prelude::{Decode, Encode, MaxEncodedLen, TypeInfo},
+	parameter_types,
+	traits::fungible::NativeOrWithId,
+	PalletId,
+};
+use frame_system::pallet_prelude::BlockNumberFor;
+use sp_core::H256;
+use sp_runtime::DispatchError;
+use sp_std::{cmp::Ordering, prelude::*};
+
+pub type CasinoJamFeeHandler = AjunaAssetFeeHandler<
+	CasinoJamAffiliates,
+	AffiliateMaxLevel,
+	CasinoJamTournament,
+	DummyVoucherHandler,
+>;
 
 pub struct CasinoJamSageEngine;
 
@@ -75,6 +96,7 @@ pub type CasinoJamGameTransition =
 	CasinoJamTransition<AccountId, BlockNumberFor<Runtime>, CasinoJamSageEngine>;
 
 pub type CasinoJamAssetFilter = GameFilter<BlockNumberFor<Runtime>>;
+#[cfg(feature = "runtime-benchmarks")]
 pub type CasinoJamBenchmarkHelper = GameBenchmarkHelper<BlockNumberFor<Runtime>>;
 
 type FungiblesAssetId = WithdrawKind<NativeOrWithId<AssetId>>;
@@ -84,7 +106,7 @@ type TransferWithdraw =
 pub type CasinoJamSageInstance = pallet_sage::Instance1;
 impl pallet_sage::Config<CasinoJamSageInstance> for Runtime {
 	type PalletId = SageCasinoJamId;
-	type SageCasinoJamGameTransition = CasinoJamGameTransition;
+	type SageGameTransition = CasinoJamGameTransition;
 	type SeasonHandler = CasinoJamSeasons;
 	type FeeHandler = CasinoJamFeeHandler;
 	type TransferFunds = TransferFungibleAssets<TransferWithdraw, FungiblesAssetId>;

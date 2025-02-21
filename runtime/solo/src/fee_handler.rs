@@ -1,10 +1,9 @@
-use crate::{AccountId, AffiliateMaxLevel, AssetId, Assets, Balance, Balances};
+use crate::{AccountId, AssetId, Assets, Balances};
 use ajuna_payment_handler::{
-	AllowAllAssets, AssetGameFeeHandler, VoucherHandler, WithdrawCreditOrVoucher,
-	WithdrawFungibles, WithdrawWhitelistedCredit,
+	AllowAllAssets, AssetGameFeeHandler, WithdrawCreditOrVoucher, WithdrawFungibles,
+	WithdrawWhitelistedCredit,
 };
 use frame_support::traits::fungible::{NativeFromLeft, NativeOrWithId, UnionOf};
-use sp_runtime::DispatchError;
 
 pub type NativeAndAssets = UnionOf<
 	Balances,
@@ -15,17 +14,18 @@ pub type NativeAndAssets = UnionOf<
 >;
 
 /// Fee handler facilitating payment in the native currency and with whitelisted assets.
-pub type AjunaAssetFeeHandler<Affiliates, AffiliateMaxLevel, Tournament> = AssetGameFeeHandler<
-	AccountId,
-	NativeAndAssets,
-	WithdrawCreditOrVoucher<
-		WithdrawWhitelistedCredit<
-			AllowAllAssets<NativeOrWithId<AssetId>>,
-			WithdrawFungibles<AccountId, NativeAndAssets>,
+pub type AjunaAssetFeeHandler<Affiliates, AffiliateMaxLevel, Tournament, VoucherHandler> =
+	AssetGameFeeHandler<
+		AccountId,
+		NativeAndAssets,
+		WithdrawCreditOrVoucher<
+			WithdrawWhitelistedCredit<
+				AllowAllAssets<NativeOrWithId<AssetId>>,
+				WithdrawFungibles<AccountId, NativeAndAssets>,
+			>,
+			VoucherHandler,
 		>,
-		DummyVoucherHandler,
-	>,
-	Affiliates,
-	AffiliateMaxLevel,
-	Tournament,
->;
+		Affiliates,
+		AffiliateMaxLevel,
+		Tournament,
+	>;
