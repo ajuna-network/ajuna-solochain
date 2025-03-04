@@ -78,7 +78,18 @@ pallet-ajuna-affiliates      = { workspace = true }
 pallet-ajuna-battle-mogs     = { workspace = true }
 pallet-ajuna-nft-staking     = { workspace = true }
 pallet-ajuna-nft-transfer    = { workspace = true }
+pallet-ajuna-seasons         = { workspace = true }
 pallet-ajuna-tournament      = { workspace = true }
+
+# Ajuna Primitives
+ajuna-payment-handler = { workspace = true }
+ajuna-primitives      = { workspace = true }
+
+
+# SAGE
+example-transition = { workspace = true }
+pallet-sage        = { workspace = true }
+sage-api           = { workspace = true }
 
 [features]
 default = [ "std" ]
@@ -100,6 +111,7 @@ std = [
     "pallet-ajuna-battle-mogs/std",
     "pallet-ajuna-nft-transfer/std",
     "pallet-ajuna-nft-staking/std",
+    "pallet-ajuna-seasons/std",
     "pallet-ajuna-tournament/std",
     "pallet-aura/std",
     "pallet-assets/std",
@@ -137,6 +149,13 @@ std = [
     "sp-transaction-pool/std",
     "sp-version/std",
     "substrate-wasm-builder",
+    # Ajuna primivites
+    "ajuna-payment-handler/std",
+    "ajuna-primitives/std",
+    # SAGE
+    "pallet-sage/std",
+    "sage-api/std",
+    "example-transition/std",
 ]
 
 runtime-benchmarks = [
@@ -152,6 +171,7 @@ runtime-benchmarks = [
     "pallet-ajuna-battle-mogs/runtime-benchmarks",
     "pallet-ajuna-nft-transfer/runtime-benchmarks",
     "pallet-ajuna-nft-staking/runtime-benchmarks",
+    "pallet-ajuna-seasons/runtime-benchmarks",
     "pallet-ajuna-tournament/runtime-benchmarks",
     "pallet-assets/runtime-benchmarks",
     "pallet-collective/runtime-benchmarks",
@@ -169,6 +189,11 @@ runtime-benchmarks = [
     "pallet-treasury/runtime-benchmarks",
     "pallet-utility/runtime-benchmarks",
     "sp-runtime/runtime-benchmarks",
+    # Ajuna primivites
+    "ajuna-payment-handler/runtime-benchmarks",
+    "ajuna-primitives/runtime-benchmarks",
+    # SAGE
+    "pallet-sage/runtime-benchmarks",
 ]
 
 try-runtime = [
@@ -201,8 +226,11 @@ try-runtime = [
     "pallet-ajuna-battle-mogs/try-runtime",
     "pallet-ajuna-nft-transfer/try-runtime",
     "pallet-ajuna-nft-staking/try-runtime",
+    "pallet-ajuna-seasons/try-runtime",
     "pallet-ajuna-tournament/try-runtime",
     "sp-runtime/try-runtime",
+    # SAGE
+    "pallet-sage/try-runtime",
 ]
 
 # Enable metadata hash generation at compile time for the `CheckMetadataHash` extension.

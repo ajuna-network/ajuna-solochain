@@ -23,6 +23,7 @@
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
 use crate::gov::EnsureRootOrMoreThanHalfCouncil;
+
 use frame_support::{
 	construct_runtime,
 	genesis_builder_helper::{build_state, get_preset},
@@ -43,11 +44,10 @@ use frame_support::{
 use frame_system::{EnsureRoot, EnsureSigned};
 use pallet_grandpa::AuthorityId as GrandpaId;
 use pallet_transaction_payment::FungibleAdapter;
-use parity_scale_codec::{Decode, Encode, MaxEncodedLen};
-use scale_info::TypeInfo;
+use parity_scale_codec::Encode;
 use sp_api::impl_runtime_apis;
 use sp_consensus_aura::sr25519::AuthorityId as AuraId;
-use sp_core::{crypto::KeyTypeId, Get, OpaqueMetadata};
+use sp_core::{crypto::KeyTypeId, OpaqueMetadata};
 use sp_runtime::{
 	create_runtime_str, generic, impl_opaque_keys,
 	traits::{
@@ -57,13 +57,14 @@ use sp_runtime::{
 	ApplyExtrinsicResult, MultiSignature, Perbill, Permill,
 };
 use sp_std::prelude::*;
-
 #[cfg(feature = "std")]
 use sp_version::NativeVersion;
 use sp_version::RuntimeVersion;
 
 mod consts;
+mod fee_handler;
 mod gov;
+mod sage;
 mod types;
 
 pub use crate::types::{
@@ -72,14 +73,12 @@ pub use crate::types::{
 };
 pub use consts::currency;
 use consts::{currency::*, time::*};
-use pallet_nfts::Call as NftsCall;
 
-use frame_system::pallet_prelude::BlockNumberFor;
 pub use frame_system::Call as SystemCall;
 pub use pallet_balances::Call as BalancesCall;
 use pallet_identity::legacy::IdentityInfo;
 pub use pallet_timestamp::Call as TimestampCall;
-use sp_runtime::traits::{Convert, IdentifyAccount, IdentityLookup};
+use sp_runtime::traits::{Convert, IdentityLookup};
 
 /// Opaque types. These are used by the CLI to instantiate machinery that don't need to know
 /// the specifics of the runtime. They can then be made to be agnostic over specific formats
@@ -150,8 +149,8 @@ parameter_types! {
 pub struct BaseCallFilter;
 
 impl Contains<RuntimeCall> for BaseCallFilter {
-	fn contains(call: &RuntimeCall) -> bool {
-		!matches!(call, RuntimeCall::Nft(NftsCall::set_attribute { .. }))
+	fn contains(_call: &RuntimeCall) -> bool {
+		true
 	}
 }
 
@@ -209,27 +208,14 @@ impl frame_system::Config for Runtime {
 	type PostTransactions = ();
 }
 
-type SingleBlockMigrations = (pallet_ajuna_awesome_avatars::migration::v6::MigrateToV6<Runtime>,);
+type SingleBlockMigrations = ();
 
 #[cfg(not(feature = "runtime-benchmarks"))]
 use mbm::MultiBlockMigrations;
 
 #[cfg(not(feature = "runtime-benchmarks"))]
 mod mbm {
-	use crate::Runtime;
-	use pallet_ajuna_awesome_avatars::migration::v6::mbm::{
-		LazyMigrationAvatarV5ToV6, LazyMigrationPlayerSeasonConfigsV5ToV6,
-		LazyMigrationSeasonStatsV5ToV6, LazyTradeStatsMapCleanup,
-	};
-
-	use pallet_ajuna_awesome_avatars::migration::v6::weights::BajunWeight as AaaMbmWeight;
-
-	pub type MultiBlockMigrations = (
-		LazyMigrationPlayerSeasonConfigsV5ToV6<Runtime, AaaMbmWeight<Runtime>>,
-		LazyMigrationSeasonStatsV5ToV6<Runtime, AaaMbmWeight<Runtime>>,
-		LazyMigrationAvatarV5ToV6<Runtime, AaaMbmWeight<Runtime>>,
-		LazyTradeStatsMapCleanup<Runtime, AaaMbmWeight<Runtime>>,
-	);
+	pub type MultiBlockMigrations = ();
 }
 
 parameter_types! {
@@ -554,54 +540,6 @@ impl pallet_proxy::Config for Runtime {
 	type AnnouncementDepositFactor = AnnouncementDepositFactor;
 }
 
-impl pallet_insecure_randomness_collective_flip::Config for Runtime {}
-
-parameter_types! {
-	pub const AwesomeAvatarsPalletId: PalletId = PalletId(*b"aj/aaatr");
-}
-
-impl pallet_ajuna_awesome_avatars::Config for Runtime {
-	type PalletId = AwesomeAvatarsPalletId;
-	type RuntimeEvent = RuntimeEvent;
-	type Currency = Balances;
-	type Randomness = Randomness;
-	type KeyLimit = KeyLimit;
-	type ValueLimit = ValueLimit;
-	type NftHandler = NftTransfer;
-	type FeeChainMaxLength = AffiliateMaxLevel;
-	type AffiliateHandler = AffiliatesAAA;
-	type TournamentHandler = TournamentAAA;
-	type WeightInfo = ();
-}
-
-parameter_types! {
-	pub const AffiliateMaxLevel: u32 = 2;
-}
-
-pub type AffiliatesInstance1 = pallet_ajuna_affiliates::Instance1;
-impl pallet_ajuna_affiliates::Config<AffiliatesInstance1> for Runtime {
-	type RuntimeEvent = RuntimeEvent;
-	type RuleIdentifier = pallet_ajuna_awesome_avatars::types::AffiliateMethods;
-	type RuntimeRule = pallet_ajuna_awesome_avatars::FeePropagationOf<Runtime>;
-	type AffiliateMaxLevel = AffiliateMaxLevel;
-}
-
-parameter_types! {
-	pub const TournamentPalletId1: PalletId = PalletId(*b"aj/trmt1");
-	pub const MinimumTournamentPhaseDuration: BlockNumber = 100;
-}
-
-type TournamentInstance1 = pallet_ajuna_tournament::Instance1;
-impl pallet_ajuna_tournament::Config<TournamentInstance1> for Runtime {
-	type PalletId = TournamentPalletId1;
-	type RuntimeEvent = RuntimeEvent;
-	type Currency = Balances;
-	type SeasonId = pallet_ajuna_awesome_avatars::types::SeasonId;
-	type EntityId = pallet_ajuna_awesome_avatars::AvatarIdOf<Runtime>;
-	type RankedEntity = pallet_ajuna_awesome_avatars::types::Avatar<BlockNumberFor<Runtime>>;
-	type MinimumTournamentPhaseDuration = MinimumTournamentPhaseDuration;
-}
-
 pub const fn deposit(items: u32, bytes: u32) -> Balance {
 	items as Balance * 20 * AJUNS + (bytes as Balance) * 1_000 * MICRO_AJUNS
 }
@@ -648,107 +586,10 @@ impl pallet_preimage::Config for Runtime {
 }
 
 parameter_types! {
-	pub const CollectionDeposit: Balance = NANO_AJUNS;
-	pub const ItemDeposit: Balance = NANO_AJUNS;
 	pub const StringLimit: u32 = 128;
-	pub const AttributeDepositBase: Balance = deposit(1, 0);
 	pub const DepositPerByte: Balance = deposit(0, 1);
 	pub const ApprovalsLimit: u32 = 1;
 	pub const ItemAttributesApprovalsLimit: u32 = 10;
-	pub const MaxTips: u32 = 1;
-	pub const MaxDeadlineDuration: u32 = 1;
-	pub const MaxAttributesPerCall: u32 = 10;
-	pub NftFeatures: pallet_nfts::PalletFeatures = pallet_nfts::PalletFeatures::all_enabled();
-}
-
-#[derive(Debug, PartialEq, Eq, Clone, Encode, Decode, MaxEncodedLen, TypeInfo)]
-pub struct ParameterGet<const N: u32>;
-
-impl<const N: u32> Get<u32> for ParameterGet<N> {
-	fn get() -> u32 {
-		N
-	}
-}
-
-pub type KeyLimit = ParameterGet<32>;
-pub type ValueLimit = ParameterGet<64>;
-
-impl pallet_nfts::Config for Runtime {
-	type RuntimeEvent = RuntimeEvent;
-	type CollectionId = CollectionId;
-	type ItemId = ItemId;
-	type Currency = Balances;
-	type ForceOrigin = EnsureRoot<AccountId>;
-	type CreateOrigin = AsEnsureOriginWithArg<EnsureSigned<AccountId>>;
-	type Locker = NftTransfer;
-	type CollectionDeposit = CollectionDeposit;
-	type ItemDeposit = ItemDeposit;
-	type MetadataDepositBase = MetadataDepositBase;
-	type AttributeDepositBase = AttributeDepositBase;
-	type DepositPerByte = DepositPerByte;
-	type StringLimit = StringLimit;
-	type KeyLimit = KeyLimit;
-	type ValueLimit = ValueLimit;
-	type ApprovalsLimit = ApprovalsLimit;
-	type ItemAttributesApprovalsLimit = ItemAttributesApprovalsLimit;
-	type MaxTips = MaxTips;
-	type MaxDeadlineDuration = MaxDeadlineDuration;
-	type MaxAttributesPerCall = MaxAttributesPerCall;
-	type Features = NftFeatures;
-	type OffchainSignature = Signature;
-	type OffchainPublic = AccountPublic;
-	#[cfg(feature = "runtime-benchmarks")]
-	type Helper = NftBenchmarkHelper;
-	type WeightInfo = ();
-}
-
-parameter_types! {
-	pub const NftTransferPalletId: PalletId = PalletId(*b"aj/nfttr");
-}
-
-impl pallet_ajuna_nft_transfer::Config for Runtime {
-	type PalletId = NftTransferPalletId;
-	type RuntimeEvent = RuntimeEvent;
-	type CollectionId = CollectionId;
-	type ItemId = Hash;
-	type ItemConfig = pallet_nfts::ItemConfig;
-	type KeyLimit = KeyLimit;
-	type ValueLimit = ValueLimit;
-	type NftHelper = Nft;
-}
-
-parameter_types! {
-	pub const NftStakingPalletId: PalletId = PalletId(*b"aj/nftst");
-	pub const MaxContracts: u32 = 1_000;
-	pub const MaxStakingClauses: u32 = 20;
-	pub const MaxFeeClauses: u32 = 20;
-	pub const MaxMetadataLenght: u32 = 100;
-}
-
-impl pallet_ajuna_nft_staking::Config for Runtime {
-	type PalletId = NftStakingPalletId;
-	type RuntimeEvent = RuntimeEvent;
-	type Currency = Balances;
-	type CollectionId = CollectionId;
-	type ItemId = Hash;
-	type ItemConfig = pallet_nfts::ItemConfig;
-	type NftHelper = Nft;
-	type MaxContracts = MaxContracts;
-	type MaxStakingClauses = MaxStakingClauses;
-	type MaxFeeClauses = MaxFeeClauses;
-	type MaxMetadataLength = MaxMetadataLenght;
-	type KeyLimit = KeyLimit;
-	type ValueLimit = ValueLimit;
-	#[cfg(feature = "runtime-benchmarks")]
-	type BenchmarkHelper = ();
-	type WeightInfo = ();
-}
-
-impl pallet_ajuna_battle_mogs::Config for Runtime {
-	type RuntimeEvent = RuntimeEvent;
-	type Currency = Balances;
-	type Randomness = Randomness;
-	type WeightInfo = ();
 }
 
 // Create the runtime by composing the FRAME pallets that were previously configured.
@@ -777,15 +618,16 @@ construct_runtime!(
 		Multisig: pallet_multisig = 17,
 		Utility: pallet_utility = 18,
 		Preimage: pallet_preimage = 19,
-		AwesomeAvatars: pallet_ajuna_awesome_avatars = 22,
-		Randomness: pallet_insecure_randomness_collective_flip = 23,
-		Nft: pallet_nfts = 24,
-		NftTransfer: pallet_ajuna_nft_transfer = 25,
-		NftStaking: pallet_ajuna_nft_staking = 26,
-		BattleMogs: pallet_ajuna_battle_mogs = 27,
-		AffiliatesAAA: pallet_ajuna_affiliates::<Instance1> = 28,
-		TournamentAAA: pallet_ajuna_tournament::<Instance1> = 29,
-		Migrations: pallet_migrations = 30,
+		// Migrations
+		Migrations: pallet_migrations = 20,
+		// SAGE - Extra
+		CasinoJamAffiliates: pallet_ajuna_affiliates::<Instance1> = 32,
+		CasinoJamTournament: pallet_ajuna_tournament::<Instance1> = 33,
+		// SAGE - Seasons
+		CasinoJamSeasons: pallet_ajuna_seasons::<Instance1> = 34,
+		// SAGE
+		CasinoJamSage: pallet_sage::<Instance1> = 40,
+		CasinoJamRandom: pallet_insecure_randomness_collective_flip = 41
 	}
 );
 
@@ -832,38 +674,6 @@ mod benches {
 		[frame_benchmarking, BaselineBench::<Runtime>]
 		[frame_system, SystemBench::<Runtime>]
 	);
-}
-
-#[cfg(feature = "runtime-benchmarks")]
-pub struct NftBenchmarkHelper;
-
-#[cfg(feature = "runtime-benchmarks")]
-impl<CollectionId: From<u16>, ItemId: From<[u8; 32]>>
-	pallet_nfts::BenchmarkHelper<CollectionId, ItemId, AccountPublic, AccountId, Signature>
-	for NftBenchmarkHelper
-{
-	fn collection(i: u16) -> CollectionId {
-		i.into()
-	}
-	fn item(i: u16) -> ItemId {
-		let mut id = [0_u8; 32];
-		let bytes = i.to_be_bytes();
-		id[0] = bytes[0];
-		id[1] = bytes[1];
-		id.into()
-	}
-
-	fn signer() -> (sp_runtime::MultiSigner, sp_runtime::AccountId32) {
-		let public = sp_io::crypto::sr25519_generate(0.into(), None);
-		let account = sp_runtime::MultiSigner::Sr25519(public).into_account();
-		(public.into(), account)
-	}
-	fn sign(signer: &sp_runtime::MultiSigner, message: &[u8]) -> sp_runtime::MultiSignature {
-		sp_runtime::MultiSignature::Sr25519(
-			sp_io::crypto::sr25519_sign(0.into(), &signer.clone().try_into().unwrap(), message)
-				.unwrap(),
-		)
-	}
 }
 
 impl_runtime_apis! {
